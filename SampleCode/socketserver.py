@@ -9,8 +9,10 @@ class Socketserver(object):
         self.server_socket.bind((self.host,self.port)) #client Binding
         self.server_socket.listen() # 1 Client is connectable
         self.CMD = "None" # CMD
-        self.client_socket, self.addr = self.server_socket.accept()#클라이언트 함수가 접속하면 새로운 소켓을 반환한다.
         self.status ="vel, angle" # Car's status
+       
+    def check(self):
+        self.client_socket, self.addr = self.server_socket.accept() #클라이언트 함수가 접속하면 새로운 소켓을 반환한다.
         print("Controler is Connected",self.addr)
     
     def receive_CMD(self):
@@ -26,6 +28,7 @@ class Socketserver(object):
 
 if __name__ == '__main__':
     ss=Socketserver()
+    ss.check()
     ss.receive_CMD()
     print(ss.CMD)
     ss.connect_close()
