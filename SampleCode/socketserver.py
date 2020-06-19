@@ -8,8 +8,14 @@ class Socketserver(object):
         self.host = "127.0.0.1"
         self.port = 4000
         self.server_socket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    def connect
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server_socket.bind((self.host,self.port))
+        self.server_socket.listen(1)
+        self.client_socket, self.addr = self.server_socket.accept()#클라이언트 함수가 접속하면 새로운 소켓을 반환한다.
+        
+    def receive_CMD(self):
+        self.CMD=self.client_socket.recv(1024)
+        
 """
 def handle_client(client_socket, addr):
     print("접속한 클라이언트의 주소 입니다. : ", addr)
