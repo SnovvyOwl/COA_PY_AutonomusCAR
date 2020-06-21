@@ -2,15 +2,15 @@
 
 String R_data;
 String T_data;
-int BF_value;
-int LR_value;
+int BF_value = 0;
+int LR_value = 0;
 bool flag;
 
 Servo servo;
 
 void setup() {
   Serial.begin(115200);
-  int servo_pin = 9;
+  int servo_pin = 3;
   servo.attach(servo_pin);
 }
 
@@ -90,7 +90,7 @@ bool Serial_check(){
 }
 
 void servo_position(int val){
-  val = map(val, -500, 500, -180, 180);
+  val = map(val, -500, 500, 0, 180);
   servo.write(val);
 }
 
