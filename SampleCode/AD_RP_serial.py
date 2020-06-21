@@ -58,6 +58,7 @@ class Serial_command():
 
 class Position_status():
     def __init__(self):
+        #BF, LR value is -500 to 500
         self.BF_desire = 0
         self.LR_desire = 500
         #self.BF_current = 10
@@ -92,14 +93,13 @@ if __name__ == '__main__':
 
     #Serial command
     while True:
+        
         if MyPos.LR_desire == 500:
             MyPos.LR_desire = -500
         elif MyPos.LR_desire == -500:
             MyPos.LR_desire = 500
     
         MySerial.Value_to_T_data(MyPos.BF_desire, MyPos.LR_desire)
-        if MySerial.T_data_history != MySerial.T_data:
-            print(MySerial.T_data)
         MySerial.Serial_write()
         MySerial.Serial_read()
         if MySerial.R_data != "":
