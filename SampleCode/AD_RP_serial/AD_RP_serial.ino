@@ -1,11 +1,17 @@
+#include <Servo.h>
+
 String R_data;
 String T_data;
 int BF_value;
 int LR_value;
 bool flag;
 
+Servo servo;
+
 void setup() {
-  Serial.begin(115200); 
+  Serial.begin(115200);
+  int servo_pin = 9;
+  servo.attach(servo_pin);
 }
 
 void Serial_read(){
@@ -83,14 +89,21 @@ bool Serial_check(){
   return false;
 }
 
+void servo_position(int val){
+  val = map(val, -500, 500, -180, 180);
+  servo.write(val);
+}
+
 void loop() {
   Serial_read();
   if (R_data != ""){
     flag = Serial_check();
     if (not flag){
       Catch_value(R_data);
+      servo_position(LR_value);
       T_data = String(BF_value) + ", " + String(LR_value);
       Serial_write();
     } 
   }
+  delay(1);
 }
