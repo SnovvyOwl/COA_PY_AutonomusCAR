@@ -3,12 +3,17 @@ import time
 
 class Serial_command():
     def __init__(self):
+        #Serial communication information
         self.port = '/dev/ttyUSB0'
         self.baud = 115200
         self.timeout = 1
+        
+        #Serial communication data
         self.T_data = ""
         self.T_data_history = ""
         self.R_data = ""
+        
+        #Define serial communication
         self.ser = serial.Serial(self.port, self.baud, timeout = self.timeout)
     
     def Serial_check(self, timeout = 5):
@@ -58,7 +63,7 @@ class Serial_command():
 
 class Position_status():
     def __init__(self):
-        #BF, LR value is -500 to 500
+        #BF, LR value range is -500 to 500
         self.BF_desire = 0
         self.LR_desire = 500
         #self.BF_current = 10
@@ -72,17 +77,17 @@ class Position_status():
     def Set_LR_position(self, value):
         self.LR_desire = value
     
-    def Change_BF_position(self):
-        if self.BF_desire > self.BF_current:
-            self.BF_current = self.BF_current + self.BF_pulse
-        if self.BF_desire < self.BF_current:
-            self.BF_current = self.BF_current - self.BF_pulse
-            
-    def Change_LR_position(self):
-        if self.LR_desire > self.LR_current:
-            self.LR_current = self.LR_current + self.LR_pulse
-        if self.LR_desire < self.LR_current:
-            self.LR_current = self.LR_current - self.LR_pulse
+    #deactivated function for a while
+    #def Change_position(self):
+        #if self.BF_desire > self.BF_current:
+            #self.BF_current = self.BF_current + self.BF_pulse
+        #if self.BF_desire < self.BF_current:
+            #self.BF_current = self.BF_current - self.BF_pulse
+        #if self.LR_desire > self.LR_current:
+            #self.LR_current = self.LR_current + self.LR_pulse
+        #if self.LR_desire < self.LR_current:
+            #self.LR_current = self.LR_current - self.LR_pulse
+        
 
 if __name__ == '__main__':
     MySerial = Serial_command()
@@ -104,4 +109,5 @@ if __name__ == '__main__':
         MySerial.Serial_read()
         if MySerial.R_data != "":
             print(MySerial.R_data)
-        time.sleep(2)
+        MySerial.Serial_read()
+        time.sleep(1)
