@@ -7,7 +7,7 @@ int BF_value = 0;
 int LR_value = 0;
 int LR_value_history = 0;
 
-bool flag;
+bool flag = false;
 
 int servo_min_pos = -500;
 int servo_max_pos = 500;
@@ -25,7 +25,8 @@ void setup() {
   //Servo setting
   int servo_pin = 3;
   servo.attach(servo_pin);
-  
+
+  Start_setup();
 }
 
 void Serial_read(){
@@ -117,16 +118,22 @@ void servo_position(int val){
   delay(servo_delay);
 }
 
-void loop() {
-  Serial_read();
-  if (R_data != ""){
+void Start_setup(){
+  //Check serial communication and servo position set 0
+  servo_position(0);
+  while (!flag){
+    Serial_read();
     flag = Serial_check();
-    if (not flag){
-      Catch_value(R_data);
-      servo_position(LR_value);
-      T_data = String(BF_value) + ", " + String(LR_value);
-      Serial_write();
-    } 
   }
-  delay(1);
+}
+
+void loop() {
+  
+  Serial_read();
+  if (R_data != "" && R_data != "TEST"){
+    Catch_value(R_data);
+    servo_position(LR_value);
+    T_data = String(BF_value) + ", " + String(LR_value);
+    Serial_write(); 
+  }
 }
