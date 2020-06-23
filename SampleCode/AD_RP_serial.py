@@ -120,5 +120,4 @@ if __name__ == '__main__':
         MySerial.Serial_read()
         if MySerial.R_data != "":
             print(MySerial.R_data)
-        MySerial.Serial_read()
         time.sleep(0.1)
