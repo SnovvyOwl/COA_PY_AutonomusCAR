@@ -1,12 +1,13 @@
 import serial
 import time
+import RPi.GPIO as GPIO
 
 class Serial_command():
     def __init__(self):
         #Serial communication information
         self.port = '/dev/ttyUSB0'
         self.baud = 115200
-        self.timeout = 1
+        self.timeout = 0.5
         
         #Serial communication data
         self.T_data = ""
@@ -46,20 +47,20 @@ class Serial_command():
             self.R_data = ""
         
     def Value_to_T_data(self,BF,LR):
-        BF_portion = ""
-        LR_portion = ""
+        BF_position = ""
+        LR_position = ""
         
         if BF >= 0:
-            BF_portion = "F" + str(BF)
+            BF_position = "F" + str(BF)
         else:
-            BF_portion = "B" + str(-BF)
+            BF_position = "B" + str(-BF)
         
         if LR >= 0:
-            LR_portion = "R" + str(LR)
+            LR_position = "R" + str(LR)
         else:
-            LR_portion = "L" + str(-LR)
+            LR_position = "L" + str(-LR)
         
-        self.T_data = '@' + BF_portion + LR_portion + '#'
+        self.T_data = '@' + BF_position + LR_position + '#'
 
 class Position_status():
     def __init__(self):
@@ -87,14 +88,24 @@ class Position_status():
             #self.LR_current = self.LR_current + self.LR_pulse
         #if self.LR_desire < self.LR_current:
             #self.LR_current = self.LR_current - self.LR_pulse
-        
+
+def Start_setup():
+    #CAUTION, MySerial must be defined at main code(MySerial = Serial_command())
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    Channel_num = 15          #To reset arduino, wiring GPIO15 to reset pin on arduino
+    GPIO.setup(Channel_num, GPIO.OUT, initial = GPIO.HIGH)
+    GPIO.output(Channel_num, GPIO.LOW)        #Reset arduino
+    time.sleep(1)
+    GPIO.output(Channel_num, GPIO.HIGH)
+    MySerial.Serial_check()
 
 if __name__ == '__main__':
     MySerial = Serial_command()
     MyPos = Position_status()
 
-    #Start serial connection
-    MySerial.Serial_check()
+    #Start serial connection and set GPIO pin etc
+    Start_setup()
 
     #Serial command
     while True:
@@ -110,4 +121,4 @@ if __name__ == '__main__':
         if MySerial.R_data != "":
             print(MySerial.R_data)
         MySerial.Serial_read()
-        time.sleep(1)
+        time.sleep(0.1)
