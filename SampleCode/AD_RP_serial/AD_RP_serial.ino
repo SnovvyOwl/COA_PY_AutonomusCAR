@@ -7,22 +7,31 @@ int BF_position = 0;
 int LR_position = 0;
 int LR_position_history = 0;
 
-int servo_min_pos = -500;
-int servo_max_pos = 500;
+int servo_min_pos = -255;
+int servo_max_pos = 255;
 int servo_min_deg = 30;
 int servo_max_deg = 150;
 float servo_speed = 0.0028333333; // (sec/deg)
 
+int IN3 = 9;
+int IN4 = 10;
+int ENB = 11;
+
+int count = 0;
 
 Servo servo;
 
 void setup() {
   //Serial setting
   Serial.begin(115200);
-
+  Serial.setTimeout(500);
   //Servo setting
   int servo_pin = 3;
   servo.attach(servo_pin);
+
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENB, OUTPUT);
 
   Start_setup();
 }
@@ -112,9 +121,27 @@ void servo_position(int val){
   val = map(val, servo_min_pos, servo_max_pos, servo_min_deg, servo_max_deg);
 
   //Calculate servo delay in milliseconds
-  float servo_delay = float(servo_max_deg-servo_min_deg)/float(servo_max_pos-servo_min_pos)*float(abs(LR_position-LR_position_history))*servo_speed*1000;
+  //float servo_delay = float(servo_max_deg-servo_min_deg)/float(servo_max_pos-servo_min_pos)*float(abs(LR_position-LR_position_history))*servo_speed*1000;
   servo.write(val);
-  delay(servo_delay);
+  //delay(servo_delay);
+}
+
+void dc_position(int val){
+  if(val>0){
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+    analogWrite(ENB, val);
+  }
+  else if(val<0){
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+    analogWrite(ENB, -val);
+  }
+  else if(val == 0){
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
+    analogWrite(ENB, val);
+  }
 }
 
 void Start_setup(){
@@ -133,7 +160,9 @@ void loop() {
   if (R_data != "" && R_data != "TEST"){
     Catch_value(R_data);
     servo_position(LR_position);
+    dc_position(BF_position);
     T_data = String(BF_position) + ", " + String(LR_position);
-    Serial_write(); 
+    Serial_write();
+    count = 0;
   }
 }
