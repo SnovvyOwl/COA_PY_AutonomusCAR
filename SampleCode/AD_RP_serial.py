@@ -64,9 +64,9 @@ class Serial_command():
 
 class Position_status():
     def __init__(self):
-        #BF, LR value range is -500 to 500
-        self.BF_desire = 0
-        self.LR_desire = 500
+        #BF, LR value range is -255 to 255
+        self.BF_desire = 100
+        self.LR_desire = 0
         #self.BF_current = 10
         #self.LR_current = 10
         #self.BF_pulse = 1
@@ -106,18 +106,21 @@ if __name__ == '__main__':
 
     #Start serial connection and set GPIO pin etc
     Start_setup()
-
+    i = 0
+    speed = [200, 0, -200, 0]
     #Serial command
     while True:
         
-        if MyPos.LR_desire == 500:
-            MyPos.LR_desire = -500
-        elif MyPos.LR_desire == -500:
-            MyPos.LR_desire = 500
+        if i == 3:
+            MyPos.BF_desire = speed[i]
+            i=0
+        else:
+            MyPos.BF_desire = speed[i]
+            i += 1
     
         MySerial.Value_to_T_data(MyPos.BF_desire, MyPos.LR_desire)
         MySerial.Serial_write()
         MySerial.Serial_read()
         if MySerial.R_data != "":
             print(MySerial.R_data)
-        time.sleep(0.1)
+        time.sleep(2)
