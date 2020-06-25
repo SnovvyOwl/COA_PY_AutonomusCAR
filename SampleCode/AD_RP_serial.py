@@ -2,14 +2,13 @@ import serial
 import time
 import RPi.GPIO as GPIO
 
-Loop_time = 0.05
 
 class Serial_command():
     def __init__(self):
         #Serial communication information
         self.port = '/dev/ttyUSB0'
         self.baud = 115200
-        self.timeout = 0.005
+        self.timeout = 0
         
         #Serial communication data
         self.T_data = ""
@@ -125,6 +124,8 @@ if __name__ == '__main__':
     speed = [200, 0, -200, 0]
     #Serial command
     while True:
+        Loop_time = 0.05
+        
         Start_point = time.time()
         
         if i == 3:
