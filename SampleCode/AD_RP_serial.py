@@ -2,12 +2,14 @@ import serial
 import time
 import RPi.GPIO as GPIO
 
+Loop_time = 0.05
+
 class Serial_command():
     def __init__(self):
         #Serial communication information
         self.port = '/dev/ttyUSB0'
         self.baud = 115200
-        self.timeout = 0.5
+        self.timeout = 0.005
         
         #Serial communication data
         self.T_data = ""
@@ -20,7 +22,7 @@ class Serial_command():
     def Serial_check(self, timeout = 5):
         i = 0
         while True:
-            self.T_data = "@TEST#"
+            self.T_data = "TEST"
             self.Serial_write()
             time.sleep(1)
             print('Waiting connection.')
@@ -34,17 +36,25 @@ class Serial_command():
                 i +=1
     
     def Serial_write(self):
-        if self.T_data != self.T_data_history or self.T_data =='@TEST#':
-            self.ser.write(self.T_data.encode("utf-8"))
+        if self.T_data != self.T_data_history or self.T_data =='TEST':
+            self.ser.write('@'.encode('utf-8') + self.T_data.encode("utf-8") + '#'.encode('utf-8'))
             self.T_data_history = self.T_data
             self.T_data = ""
     
     def Serial_read(self):
-        Temp = self.ser.readline()[:-2].decode('utf-8')
-        if Temp:
-            self.R_data = Temp
+        Temp = self.ser.read().decode('utf-8')
+        if Temp == '@':
+            self.R_data = ''
+            while True:
+                Temp = self.ser.read().decode('utf-8')
+                if Temp == '#':
+                    break
+                elif Temp != '@' and Temp != '#' and Temp != '':
+                    self.R_data = self.R_data + Temp
+                else:
+                    pass
         else:
-            self.R_data = ""
+            self.R_data = ''
         
     def Value_to_T_data(self,BF,LR):
         BF_position = ""
@@ -60,7 +70,7 @@ class Serial_command():
         else:
             LR_position = "L" + str(-LR)
         
-        self.T_data = '@' + BF_position + LR_position + '#'
+        self.T_data = BF_position + LR_position
 
 class Position_status():
     def __init__(self):
@@ -93,11 +103,16 @@ def Start_setup():
     #CAUTION, MySerial must be defined at main code(MySerial = Serial_command())
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    Channel_num = 15          #To reset arduino, wiring GPIO15 to reset pin on arduino
-    GPIO.setup(Channel_num, GPIO.OUT, initial = GPIO.HIGH)
-    GPIO.output(Channel_num, GPIO.LOW)        #Reset arduino
+    
+    Channel_reset = 17          #To reset arduino, wiring GPIO15 to reset pin on arduino
+    GPIO.setup(Channel_reset, GPIO.OUT, initial = GPIO.HIGH)
+    GPIO.output(Channel_reset, GPIO.LOW)        #Reset arduino
     time.sleep(1)
-    GPIO.output(Channel_num, GPIO.HIGH)
+    GPIO.output(Channel_reset, GPIO.HIGH)
+    
+    Channel_flag = 27
+    GPIO.setup(Channel_flag, GPIO.OUT, initial = GPIO.HIGH)
+    
     MySerial.Serial_check()
 
 if __name__ == '__main__':
@@ -110,17 +125,21 @@ if __name__ == '__main__':
     speed = [200, 0, -200, 0]
     #Serial command
     while True:
+        Start_point = time.time()
         
         if i == 3:
             MyPos.BF_desire = speed[i]
-            i=0
+            i = 0
         else:
             MyPos.BF_desire = speed[i]
             i += 1
-    
+        
         MySerial.Value_to_T_data(MyPos.BF_desire, MyPos.LR_desire)
         MySerial.Serial_write()
         MySerial.Serial_read()
         if MySerial.R_data != "":
             print(MySerial.R_data)
-        time.sleep(2)
+        
+        End_point = time.time()
+        time.sleep(Loop_time-(End_point-Start_point))
+        #print(End_point-Start_point)
