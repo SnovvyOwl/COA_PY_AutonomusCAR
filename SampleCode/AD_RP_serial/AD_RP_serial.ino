@@ -17,6 +17,8 @@ int IN3 = 9;
 int IN4 = 10;
 int ENB = 11;
 
+int flag_pin = 12;
+
 int count = 0;
 
 Servo servo;
@@ -33,6 +35,8 @@ void setup() {
   pinMode(IN4, OUTPUT);
   pinMode(ENB, OUTPUT);
 
+  pinMode(flag_pin, INPUT);
+  
   Start_setup();
 }
 
@@ -63,7 +67,7 @@ void Serial_read(){
 }
 
 void Serial_write(){
-  Serial.println(T_data);
+  Serial.println('@' + T_data + '#');
   T_data = "";
 }
 
@@ -157,12 +161,15 @@ void Start_setup(){
 void loop() {
   
   Serial_read();
-  if (R_data != "" && R_data != "TEST"){
+  if (R_data != "" && R_data != "TEST" && digitalRead(flag_pin) == HIGH){
     Catch_value(R_data);
     servo_position(LR_position);
     dc_position(BF_position);
     T_data = String(BF_position) + ", " + String(LR_position);
     Serial_write();
     count = 0;
-  }
+  } //else if (digitalRead(flag_pin) == LOW){
+    //servo_position(0);
+    //dc_position(0);
+  //}
 }
