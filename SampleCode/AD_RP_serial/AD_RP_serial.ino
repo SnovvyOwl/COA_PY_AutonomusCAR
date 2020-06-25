@@ -17,7 +17,9 @@ int ENB = 11;
 
 int flag_pin = 12;
 
-int count = 0;
+unsigned long Start_point;
+unsigned long End_point;
+int Loop_time = 50;
 
 Servo servo;
 
@@ -150,17 +152,16 @@ void Start_setup(){
 }
 
 void loop() {
+  Start_point = millis();
   
   Serial_read();
-  if (R_data != "" && R_data != "TEST" && digitalRead(flag_pin) == HIGH){
+  if (R_data != "" && R_data != "TEST"){
     Catch_value(R_data);
     Servo_position(LR_position);
     DC_position(BF_position);
     T_data = String(BF_position) + ", " + String(LR_position);
     Serial_write();
-    count = 0;
-  } //else if (digitalRead(flag_pin) == LOW){
-    //Servo_position(0);
-    //DC_position(0);
-  //}
+  }
+  End_point = millis();
+  //delay(Loop_time - (End_point - Start_point));
 }
