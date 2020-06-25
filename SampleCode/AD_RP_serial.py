@@ -140,7 +140,6 @@ if __name__ == '__main__':
         MySerial.Serial_read()
         if MySerial.R_data != "":
             print(MySerial.R_data)
-        
         End_point = time.time()
         time.sleep(Loop_time-(End_point-Start_point))
         #print(End_point-Start_point)
