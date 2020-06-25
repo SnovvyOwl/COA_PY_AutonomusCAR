@@ -5,13 +5,11 @@ String T_data;
 
 int BF_position = 0;
 int LR_position = 0;
-int LR_position_history = 0;
 
 int servo_min_pos = -255;
 int servo_max_pos = 255;
 int servo_min_deg = 30;
 int servo_max_deg = 150;
-float servo_speed = 0.0028333333; // (sec/deg)
 
 int IN3 = 9;
 int IN4 = 10;
@@ -97,7 +95,6 @@ void Catch_value(String Command){
       value = value + Command[i];
       i++;
     }
-    LR_position_history = LR_position;
     LR_position = value.toInt();
   } else if (Command[i] == 'L'){
     i++;
@@ -105,7 +102,6 @@ void Catch_value(String Command){
       value = value + Command[i];
       i++;
     }
-    LR_position_history = LR_position;
     LR_position = value.toInt()*-1;
   }
 }
@@ -119,18 +115,13 @@ bool Serial_check(){
   return false;
 }
 
-void servo_position(int val){
-  //Input data is servo_min_pos to servo_max_pos (probably -500 to 500 initially I set)
-  //Servo speed : 0.17sec/60deg(0.0028333333sec/deg)
+void Servo_position(int val){
+  //Input data is servo_min_pos to servo_max_pos (probably -255 to 255 initially I set)
   val = map(val, servo_min_pos, servo_max_pos, servo_min_deg, servo_max_deg);
-
-  //Calculate servo delay in milliseconds
-  //float servo_delay = float(servo_max_deg-servo_min_deg)/float(servo_max_pos-servo_min_pos)*float(abs(LR_position-LR_position_history))*servo_speed*1000;
   servo.write(val);
-  //delay(servo_delay);
 }
 
-void dc_position(int val){
+void DC_position(int val){
   if(val>0){
     digitalWrite(IN3, HIGH);
     digitalWrite(IN4, LOW);
@@ -150,7 +141,7 @@ void dc_position(int val){
 
 void Start_setup(){
   //Check serial communication and servo position set 0
-  servo_position(0);
+  Servo_position(0);  
   bool flag = false;
   while (!flag){
     Serial_read();
@@ -163,13 +154,13 @@ void loop() {
   Serial_read();
   if (R_data != "" && R_data != "TEST" && digitalRead(flag_pin) == HIGH){
     Catch_value(R_data);
-    servo_position(LR_position);
-    dc_position(BF_position);
+    Servo_position(LR_position);
+    DC_position(BF_position);
     T_data = String(BF_position) + ", " + String(LR_position);
     Serial_write();
     count = 0;
   } //else if (digitalRead(flag_pin) == LOW){
-    //servo_position(0);
-    //dc_position(0);
+    //Servo_position(0);
+    //DC_position(0);
   //}
 }
