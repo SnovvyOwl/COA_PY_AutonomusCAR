@@ -1,5 +1,7 @@
 #include <Servo.h>
 
+//Configuration
+
 String R_data;
 String T_data;
 
@@ -10,27 +12,27 @@ int servo_min_pos = -255;
 int servo_max_pos = 255;
 int servo_min_deg = 30;
 int servo_max_deg = 150;
+int servo_pin = 3;
 
+//DC controlldr pin info
 int IN3 = 9;
 int IN4 = 10;
 int ENB = 11;
 
+//Connected with raspberry pi GPIO pin
 int flag_pin = 12;
 
-unsigned long Start_point;
-unsigned long End_point;
-int Loop_time = 50;
 
 Servo servo;
 
 void setup() {
   //Serial setting
   Serial.begin(115200);
-  Serial.setTimeout(500);
+  
   //Servo setting
-  int servo_pin = 3;
   servo.attach(servo_pin);
 
+  //DC controller digital pin setting
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
   pinMode(ENB, OUTPUT);
@@ -152,8 +154,7 @@ void Start_setup(){
 }
 
 void loop() {
-  Start_point = millis();
-  
+
   Serial_read();
   if (R_data != "" && R_data != "TEST"){
     Catch_value(R_data);
@@ -162,6 +163,5 @@ void loop() {
     T_data = String(BF_position) + ", " + String(LR_position);
     Serial_write();
   }
-  End_point = millis();
-  //delay(Loop_time - (End_point - Start_point));
+  
 }
