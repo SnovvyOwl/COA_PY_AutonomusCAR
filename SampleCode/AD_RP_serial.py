@@ -12,11 +12,12 @@ class Serial_command():
         
         #Serial communication data
         self.T_data = ""
-        self.T_data_history = ""
         self.R_data = ""
         
         #Define serial communication
         self.ser = serial.Serial(self.port, self.baud, timeout = self.timeout)
+        
+        self.Loop_time = 0.05
     
     def Serial_check(self, timeout = 5):
         i = 0
@@ -35,10 +36,7 @@ class Serial_command():
                 i +=1
     
     def Serial_write(self):
-        if self.T_data != self.T_data_history or self.T_data =='TEST':
-            self.ser.write('@'.encode('utf-8') + self.T_data.encode("utf-8") + '#'.encode('utf-8'))
-            self.T_data_history = self.T_data
-            self.T_data = ""
+        self.ser.write('@'.encode('utf-8') + self.T_data.encode("utf-8") + '#'.encode('utf-8'))
     
     def Serial_read(self):
         Temp = self.ser.read().decode('utf-8')
@@ -124,7 +122,6 @@ if __name__ == '__main__':
     speed = [200, 0, -200, 0]
     #Serial command
     while True:
-        Loop_time = 0.05
         
         Start_point = time.time()
         
@@ -141,5 +138,7 @@ if __name__ == '__main__':
         if MySerial.R_data != "":
             print(MySerial.R_data)
         End_point = time.time()
-        time.sleep(Loop_time-(End_point-Start_point))
-        #print(End_point-Start_point)
+        time.sleep(MySerial.Loop_time-(End_point-Start_point))
+        
+#Current Serial read method must be improved. Because, When I use
+#Serial read twice time within one loop, It cause improper situation.
