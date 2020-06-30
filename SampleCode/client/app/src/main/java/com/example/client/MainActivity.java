@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BufferedReader networkReader;
     private PrintWriter networkWriter;
     private DataOutputStream dos;
-    private String ip = "192.168.35.125";
+    //private String ip = "192.168.55.53";
     //private String ip = "192.168.42.72";  // IP 번호
     private int port = 8080;                          // port 번호
     private String CMD="vel, angle";
@@ -74,13 +74,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Thread checkUpdate = new Thread() {
             public void run() {
                 // ip받기
-                //String newip = String.valueOf(ip_edit.getText());
+                String newip = String.valueOf(ip_edit.getText());
 
                 // 서버 접속
                 try {
-                    //socket = new Socket(newip, port);
+                    socket = new Socket(newip, port);
 
-                    socket=new Socket(ip,port);
+                    //socket=new Socket(ip,port);
                     Log.w("서버 접속됨", "서버 접속됨");
                 } catch (IOException e1) {
                     Log.w("서버접속못함", "서버접속못함");
