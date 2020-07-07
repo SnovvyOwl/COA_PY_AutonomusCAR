@@ -22,7 +22,7 @@ int ENB = 11;
 //Connected with raspberry pi GPIO pin
 int flag_pin = 12;
 
-int Loop_time = 50;
+int Loop_time = 20;
 unsigned long point = 0;
 
 Servo servo;
@@ -164,14 +164,14 @@ void loop() {
     DC_position(BF_position);
     T_data = String(BF_position) + ", " + String(LR_position);
     Serial_write();
+    point = 0;
   }
-  else if (point == 0){
+  else if (point == 0 && R_data == ""){
     point = millis();
   }
-  else if (millis() - point > 3 * Loop_time){
+  if (millis() - point > 3 * Loop_time && point != 0){
     point = 0;
     Servo_position(0);
     DC_position(0);
   }
-  
 }
