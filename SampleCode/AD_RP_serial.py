@@ -17,7 +17,7 @@ class Serial_command():
         #Define serial communication
         self.ser = serial.Serial(self.port, self.baud, timeout = self.timeout)
         
-        self.Loop_time = 0.05
+        self.Loop_time = 0.02
     
     def Serial_check(self, timeout = 5):
         i = 0
@@ -107,9 +107,6 @@ def Start_setup():
     time.sleep(1)
     GPIO.output(Channel_reset, GPIO.HIGH)
     
-    Channel_flag = 27
-    GPIO.setup(Channel_flag, GPIO.OUT, initial = GPIO.HIGH)
-    
     MySerial.Serial_check()
 
 if __name__ == '__main__':
@@ -125,12 +122,7 @@ if __name__ == '__main__':
         
         Start_point = time.time()
         
-        if i == 3:
-            MyPos.BF_desire = speed[i]
-            i = 0
-        else:
-            MyPos.BF_desire = speed[i]
-            i += 1
+        MyPos.BF_desire = speed[0]
         
         MySerial.Value_to_T_data(MyPos.BF_desire, MyPos.LR_desire)
         MySerial.Serial_write()
