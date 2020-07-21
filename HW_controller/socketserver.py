@@ -1,9 +1,9 @@
 import socket
 
 class Socketserver(object):
-    def __init__(self):
-        self.host = "192.168.35.125" # HOST address
-        self.port = 8080 #port number
+    def __init__(self,ip,port):
+        self.host = ip# HOST address
+        self.port = port #port number
         self.server_socket=socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Socket Object is created 
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # AVOID port error 
         self.server_socket.bind((self.host,self.port)) #client Binding
@@ -31,7 +31,7 @@ class Socketserver(object):
 
 
 if __name__ == '__main__':
-    ss=Socketserver()
+    ss=Socketserver("192.168.35.125" ,8080)
     ss.check()
     print(ss.CMD)
     """
