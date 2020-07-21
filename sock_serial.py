@@ -6,13 +6,13 @@ import threading
 
 class Car(object):
     def __init__(self):
-        self.server=socketclient()
+        self.client=socketclient()
         self.serial=Serial_command()
         self.pos= Position_status()
     
     def check(self):
         self.serial.Serial_check()
-        self.server.check()
+        self.client.check()
         self.th = threading.Thread(target=server.receive_CMD, args = (server.client_socket,server.addr))
         self.th.start()
 
