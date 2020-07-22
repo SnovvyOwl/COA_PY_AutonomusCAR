@@ -3,7 +3,7 @@ import time
 import RPi.GPIO as GPIO
 
 
-class Serial_command():
+class Serial_communication():
     def __init__(self):
         #Serial communication information
         self.port = '/dev/ttyUSB0'
@@ -19,7 +19,7 @@ class Serial_command():
         
         self.Loop_time = 0.02
     
-    def Start_setup():
+    def Start_setup(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
     
@@ -45,7 +45,7 @@ class Serial_command():
                 print('Test fail');
                 break;
             else:
-                i +=1
+                i += 1
     
     def Serial_write(self):
         self.ser.write('@'.encode('utf-8') + self.T_data.encode("utf-8") + '#'.encode('utf-8'))
@@ -94,7 +94,7 @@ class Position_status():
         self.LR_desire = value
 
 if __name__ == '__main__':
-    MySerial = Serial_command()
+    MySerial = Serial_communication()
     MyPos = Position_status()
 
     #Start serial connection and set GPIO pin etc
