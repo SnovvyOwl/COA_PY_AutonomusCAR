@@ -17,7 +17,7 @@ class Serial_command():
         #Define serial communication
         self.ser = serial.Serial(self.port, self.baud, timeout = self.timeout)
         
-        self.Loop_time = 0.05
+        self.Loop_time = 0.02
     
     def Serial_check(self, timeout = 5):
         i = 0
@@ -74,27 +74,12 @@ class Position_status():
         #BF, LR value range is -255 to 255
         self.BF_desire = 100
         self.LR_desire = 0
-        #self.BF_current = 10
-        #self.LR_current = 10
-        #self.BF_pulse = 1
-        #self.LR_pulse = 2
     
     def Set_BF_position(self, value):
         self.BF_desire = value
     
     def Set_LR_position(self, value):
         self.LR_desire = value
-    
-    #deactivated function for a while
-    #def Change_position(self):
-        #if self.BF_desire > self.BF_current:
-            #self.BF_current = self.BF_current + self.BF_pulse
-        #if self.BF_desire < self.BF_current:
-            #self.BF_current = self.BF_current - self.BF_pulse
-        #if self.LR_desire > self.LR_current:
-            #self.LR_current = self.LR_current + self.LR_pulse
-        #if self.LR_desire < self.LR_current:
-            #self.LR_current = self.LR_current - self.LR_pulse
 
 def Start_setup():
     #CAUTION, MySerial must be defined at main code(MySerial = Serial_command())
@@ -106,9 +91,6 @@ def Start_setup():
     GPIO.output(Channel_reset, GPIO.LOW)        #Reset arduino
     time.sleep(1)
     GPIO.output(Channel_reset, GPIO.HIGH)
-    
-    Channel_flag = 27
-    GPIO.setup(Channel_flag, GPIO.OUT, initial = GPIO.HIGH)
     
     MySerial.Serial_check()
 
@@ -125,12 +107,7 @@ if __name__ == '__main__':
         
         Start_point = time.time()
         
-        if i == 3:
-            MyPos.BF_desire = speed[i]
-            i = 0
-        else:
-            MyPos.BF_desire = speed[i]
-            i += 1
+        MyPos.BF_desire = speed[0]
         
         MySerial.Value_to_T_data(MyPos.BF_desire, MyPos.LR_desire)
         MySerial.Serial_write()
