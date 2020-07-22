@@ -19,6 +19,18 @@ class Serial_command():
         
         self.Loop_time = 0.02
     
+    def Start_setup():
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+    
+        Channel_reset = 17          #To reset arduino, wiring GPIO15 to reset pin on arduino
+        GPIO.setup(Channel_reset, GPIO.OUT, initial = GPIO.HIGH)
+        GPIO.output(Channel_reset, GPIO.LOW)        #Reset arduino
+        time.sleep(1)
+        GPIO.output(Channel_reset, GPIO.HIGH)
+    
+        self.Serial_check()
+    
     def Serial_check(self, timeout = 5):
         i = 0
         while True:
@@ -81,25 +93,12 @@ class Position_status():
     def Set_LR_position(self, value):
         self.LR_desire = value
 
-def Start_setup():
-    #CAUTION, MySerial must be defined at main code(MySerial = Serial_command())
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    
-    Channel_reset = 17          #To reset arduino, wiring GPIO15 to reset pin on arduino
-    GPIO.setup(Channel_reset, GPIO.OUT, initial = GPIO.HIGH)
-    GPIO.output(Channel_reset, GPIO.LOW)        #Reset arduino
-    time.sleep(1)
-    GPIO.output(Channel_reset, GPIO.HIGH)
-    
-    MySerial.Serial_check()
-
 if __name__ == '__main__':
     MySerial = Serial_command()
     MyPos = Position_status()
 
     #Start serial connection and set GPIO pin etc
-    Start_setup()
+    MySerial.Start_setup()
     i = 0
     speed = [200, 0, -200, 0]
     #Serial command
