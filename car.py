@@ -1,11 +1,11 @@
 from HW_controller.socketclient import Socketclient
-from HW_controller.AD_RP_serial import Serial_communication
+from HW_controller.AD_RP_serial import *
 import threading
 
 
 class Car(object):
     def __init__(self):
-        self.client=Socketclient('192.168.35.125',8080)
+        self.client=Socketclient("192.168.137.91",8080)
         self.serial=Serial_communication()
         self.pos= Position_status()
     
@@ -16,17 +16,17 @@ class Car(object):
         self.th.start()
 
     def run(self):
-        while (client.CMD != 'q'):
-            self.pos.Change_BF_position()
-            self.pos.Change_LR_position()
-            self.serial.Value_to_T_data(self.pos.BF_current, self.pos.LR_current)
-            if self.serial.T_data_history != self.serial.T_data:
-                print(self.serial.T_data)
+        while (self.client.CMD != 'q'):
+            Start_point = time.time()
+            self.pos.Set_BF_position(0)
+            self.pos.Set_LR_position(0)
+            self.serial.Value_to_T_data(self.pos.BF_desire, self.pos.LR_desire)
             self.serial.Serial_write()
             self.serial.Serial_read()
             if self.serial.R_data != "":
                 print(self.serial.R_data)
-            time.sleep(0.001)
+            End_point = time.time()
+            time.sleep(self.serial.Loop_time-(End_point-Start_point))
             
 
 if __name__ == '__main__':
