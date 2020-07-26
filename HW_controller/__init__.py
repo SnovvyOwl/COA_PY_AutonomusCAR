@@ -1,1 +1,1 @@
-__all__=["socketclient", "AD_RP_Serial", "MPU9250", "socketserver"]
+__all__=["socketclient", "AD_RP_Serial", "MPU9250", "socketserver","camera"]
