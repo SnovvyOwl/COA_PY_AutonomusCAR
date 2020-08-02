@@ -23,14 +23,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
-
-
     }
 
     @Override
     public void onClick(View view) {
         if (view == btn1){
-
+            Intent intent = new Intent(getApplicationContext(),ConnectActivity.class);
+            startActivity(intent);
         }
         if (view == btn2){
             Intent intent = new Intent(getApplicationContext(),ControllerActivity.class);

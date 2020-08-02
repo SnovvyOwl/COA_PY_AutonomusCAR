@@ -18,17 +18,17 @@ public class SwipeController {
     private boolean isVertical;
     private int stick_width, stick_height;
 
-    private int xCenter = 0, yCenter = 0, min_distance = 0;
-    public int percent = 0;
-    private static int OFFSET = 0;
-    private float distance = 0;
+    private int xCenter, yCenter;
+    private static int OFFSET ;
+    private static int MAX ;
+    int percent ;
 
     private DrawCanvas draw;
     private Paint paint;
 
     private boolean touch_state = false;
 
-    public SwipeController(Context context, ViewGroup layout, int controller_res_id, boolean isVertical){
+    SwipeController(Context context, ViewGroup layout, int controller_res_id, boolean isVertical, int offset){
         this.isVertical = isVertical;
         this.context = context;
         this.layout = layout;
@@ -43,83 +43,96 @@ public class SwipeController {
 
         draw = new DrawCanvas(context);
         paint = new Paint();
+
+        OFFSET = offset;
+        if (isVertical){
+            MAX = layoutParams.height - OFFSET;
+        } else {
+            MAX = layoutParams.width - OFFSET;
+        }
     }
 
-    public void setStickCenter(){
-        draw.position(layoutParams.width/2,layoutParams.height/2);
+    void setStickCenter(){
+        draw.position(xCenter,yCenter);
         draw();
     }
 
-    public void setStickSize(int width, int height){
+    void setStickSize(int width, int height){
         stick = Bitmap.createScaledBitmap(stick,width,height,false);
         stick_width = stick.getWidth();
         stick_height = stick.getHeight();
     }
 
-    public void setOffset(int offset){
-        OFFSET = offset;
-    }
-
     private int calPostion(int point){
         int result;
-        result = (point - OFFSET) * 100/(layoutParams.height - 2*OFFSET) ;
+        result = (point - OFFSET) * 100/(MAX - OFFSET) ;
         return result;
     }
 
     private void draw() {
         try {
             layout.removeView(draw);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            System.out.print("그냥..");
+        }
         layout.addView(draw);
     }
 
-    public void drawStick(MotionEvent arg1) {
+    void drawStick(MotionEvent arg1) {
 
         if (isVertical){
-            int max = layoutParams.height - OFFSET;
-            if(arg1.getAction() == MotionEvent.ACTION_DOWN) {
+
+            if(arg1.getAction() == MotionEvent.ACTION_DOWN) {   // stick touch
                 draw.position(xCenter, arg1.getY());
                 draw();
                 touch_state = true;
-            } else if(arg1.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-                if(arg1.getY() >= (layoutParams.height) - OFFSET) {
-                    draw.position(xCenter,max);
-                    percent = (max - OFFSET) * 100/(max - OFFSET);
+
+            } else if(arg1.getAction() == MotionEvent.ACTION_MOVE && touch_state) { //stick move
+                if(arg1.getY() >= MAX) {                                            //moving up
+                    draw.position(xCenter,MAX);
+                    percent = (MAX - OFFSET) * 100/(MAX - OFFSET);
                     draw();
-                }else if (arg1.getY() <= OFFSET){
+                }else if (arg1.getY() <= OFFSET){                                   //moving down
                     draw.position(xCenter,OFFSET);
                     percent = calPostion(OFFSET);
                     draw();
-                }else {
+                }else {                                                             //until MAX
                     draw.position(xCenter,arg1.getY());
                     percent = calPostion((int)arg1.getY());
-//                    percent = (int)((arg1.getY() - 90) * 100/(max - 90));
                     draw();
                 }
-            } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
+
+            } else if(arg1.getAction() == MotionEvent.ACTION_UP) {                  //end touch
                 setStickCenter();
-                percent = calPostion(layoutParams.height/2);
-//                percent = (int)((layoutParams.height/2 - OFFSET)* 100/(max - OFFSET));
+                percent = calPostion(yCenter);
                 touch_state = false;
             }
+
         } else {
+
             if(arg1.getAction() == MotionEvent.ACTION_DOWN) {
                 draw.position(arg1.getX(), yCenter);
                 draw();
                 touch_state = true;
+
             } else if(arg1.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-                if(arg1.getX() >= (layoutParams.width) - OFFSET) {
-                    draw.position(layoutParams.width - OFFSET, yCenter);
+                if(arg1.getX() >= MAX) {
+                    draw.position(MAX, yCenter);
+                    percent = (MAX - OFFSET) * 100/(MAX - OFFSET);
                     draw();
                 }else if (arg1.getX() <= OFFSET){
                     draw.position(OFFSET, yCenter);
+                    percent = calPostion(OFFSET);
                     draw();
                 }else {
                     draw.position(arg1.getX(), yCenter);
+                    percent = calPostion((int)arg1.getX());
                     draw();
                 }
+
             } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
                 setStickCenter();
+                percent = calPostion(xCenter);
                 touch_state = false;
             }
         }
@@ -131,15 +144,12 @@ public class SwipeController {
         private DrawCanvas(Context mContext) {
             super(context);
         }
-
         public void onDraw(Canvas canvas) {
             canvas.drawBitmap(stick, x, y, paint);
         }
-
         private void position(float pos_x,  float pos_y) {
-            x = pos_x - (stick_width / 2);
-            y = pos_y - (stick_height / 2);
+            x = pos_x - (int)(stick_width / 2);
+            y = pos_y - (int)(stick_height / 2);
         }
     }
-
 }

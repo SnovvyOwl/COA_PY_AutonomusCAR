@@ -7,54 +7,50 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ControllerActivity extends Activity {
+public class ControllerActivity extends Activity implements View.OnTouchListener {
 
-    RelativeLayout layout_controller;
-    RelativeLayout layout_controller2;
-    SwipeController swipeController;
-    SwipeController swipeController2;
+    RelativeLayout layout_ctrSpeed, layout_ctrDirection;
+    SwipeController speedController, directionController;
 
-    TextView sample_text;
-    TextView sample_text2;
+    TextView txtSpeed;
+    TextView txtDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controller);
 
-        sample_text = (TextView) findViewById(R.id.text);
-        sample_text2 = (TextView) findViewById(R.id.text2);
+        txtSpeed = (TextView) findViewById(R.id.text);
+        txtDir = (TextView) findViewById(R.id.text2);
 
-        layout_controller = (RelativeLayout)findViewById(R.id.layout_controller);
-        layout_controller2 = (RelativeLayout)findViewById(R.id.layout_controller2);
-        swipeController = new SwipeController(getApplicationContext(),layout_controller,R.drawable.stick2,true);
-        swipeController2 = new SwipeController(getApplicationContext(),layout_controller2,R.drawable.stick3,false);
+        layout_ctrSpeed = (RelativeLayout)findViewById(R.id.layout_ctrSpeed);
+        layout_ctrDirection = (RelativeLayout)findViewById(R.id.layout_ctrDirection);
+        layout_ctrSpeed.setOnTouchListener(this);
+        layout_ctrDirection.setOnTouchListener(this);
 
-        swipeController.setStickSize(140,140);
-        swipeController.setStickCenter();
-        swipeController.setOffset(70);
+        speedController = new SwipeController(getApplicationContext(), layout_ctrSpeed,R.drawable.stick2,true,70);
+        directionController = new SwipeController(getApplicationContext(), layout_ctrDirection,R.drawable.stick3,false,70);
 
-        swipeController2.setStickSize(150,150);
-        swipeController2.setStickCenter();
-        swipeController2.setOffset(70);
+        speedController.setStickSize(140,140);
+        speedController.setStickCenter();
 
-        layout_controller.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+        directionController.setStickSize(150,150);
+        directionController.setStickCenter();
 
-                swipeController.drawStick(motionEvent);
-                sample_text.setText(swipeController.percent+"");
-                return true;
-            }
-        });
-        layout_controller2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+    }
 
-                swipeController2.drawStick(motionEvent);
-                sample_text2.setText((int)motionEvent.getX()+"");
-                return true;
-            }
-        });
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (view == layout_ctrSpeed){
+            speedController.drawStick(motionEvent);
+            txtSpeed.setText((100 - speedController.percent)+"");
+            return true;
+        }
+        if (view == layout_ctrDirection){
+            directionController.drawStick(motionEvent);
+            txtDir.setText(directionController.percent+"");
+            return true;
+        }
+        return false;
     }
 }
