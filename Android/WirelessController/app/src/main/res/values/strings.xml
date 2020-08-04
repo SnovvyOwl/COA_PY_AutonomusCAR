@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WirelessController</string>
+
+    <string name="main_btn1">그 뭐시기냐</string>
+    <string name="main_btn2">컨트롤러</string>
+    <string name="main_btn3">설정</string>
+
+    <string name="ctr_center">50</string>
+</resources>
