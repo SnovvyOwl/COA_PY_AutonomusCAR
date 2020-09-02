@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="30dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/controllerbgr"
     tools:context=".ControllerActivity">
 
     <LinearLayout
@@ -12,14 +14,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_weight="2">
+        android:layout_weight="3">
 
         <RelativeLayout
             android:id="@+id/layout_ctrSpeed"
-            android:layout_width="60dp"
-            android:layout_height="300dp"
-            android:background="@drawable/contv"
-            android:gravity="center" />
+            android:layout_width="90dp"
+            android:layout_height="280dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/controller1"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -28,11 +36,34 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_weight="1">
+        android:layout_weight="3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="on"
+            android:textSize="30sp"
+            android:id="@+id/text3"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SET"
+            android:id="@+id/btn_set"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="right"
+        android:layout_weight="2">
 
         <ViewFlipper
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="match_parent"
+            android:background="@drawable/controllerbgr2"
             android:layout_weight="1">
 
             <LinearLayout
@@ -44,16 +75,18 @@
                     android:id="@+id/text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:textSize="50sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="30sp"
                     android:text="@string/ctr_center"/>
 
                 <TextView
                     android:id="@+id/text2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:textSize="50sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="30sp"
                     android:text="@string/ctr_center"/>
             </LinearLayout>
 
@@ -63,13 +96,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="right|center">
 
             <RelativeLayout
                 android:id="@+id/layout_ctrDirection"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:background="@drawable/controller" />
+                android:gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="90dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/controller2"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
