@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.net.Socket;
 
-public class ConnectActivity extends AppCompatActivity implements View.OnClickListener {
+public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
     Socket socket;
 
@@ -22,7 +22,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connect);
+        setContentView(R.layout.activity_test);
 
         btn1 = (Button)findViewById(R.id.btn1);
         btn2 = (Button)findViewById(R.id.btn2);
