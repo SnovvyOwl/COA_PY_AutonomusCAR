@@ -12,8 +12,9 @@ import java.net.URL;
 public class SocketCommunication {
 
     Socket socket;
-    String ip = "10.0.2.2";
-    int port = 5001;
+//    String ip = "10.0.2.2";
+    String ip = "192.168.0.9";
+    int port = 5005;
 
     void startClient() {
 
