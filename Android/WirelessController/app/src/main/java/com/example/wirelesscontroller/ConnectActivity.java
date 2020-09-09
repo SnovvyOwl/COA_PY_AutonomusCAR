@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.net.Socket;
 
-public class TestActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConnectActivity extends AppCompatActivity implements View.OnClickListener {
 
     Socket socket;
 

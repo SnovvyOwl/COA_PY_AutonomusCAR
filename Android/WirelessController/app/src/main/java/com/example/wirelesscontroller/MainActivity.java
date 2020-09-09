@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btn1){
-            Intent intent = new Intent(getApplicationContext(), TestActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ConnectActivity.class);
             startActivity(intent);
         }
         if (view == btn2){

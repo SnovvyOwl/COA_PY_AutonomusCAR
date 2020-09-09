@@ -17,7 +17,7 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     TextView txtSpeed;
     TextView txtDir;
 
-    Button btnSet;
+    Button btnSet,btnConnect;
     TextView txtConnect;
 
     SocketCommunication socketCommunication;
@@ -47,7 +47,9 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
 
         txtConnect = (TextView)findViewById(R.id.text3);
         btnSet = (Button)findViewById(R.id.btn_set);
+        btnConnect = (Button)findViewById(R.id.btn_connect);
         btnSet.setOnClickListener(this);
+        btnConnect.setOnClickListener(this);
     }
 
     @Override
@@ -70,8 +72,6 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     @Override
     public void onClick(View view) {
         if (view == btnSet){
-//            Intent intent = new Intent(getApplicationContext(),ConnectActivity.class);
-//            startActivity(intent);
             if (btnSet.getText().equals("SET")){
                 socketCommunication.startClient();
                 btnSet.setText("ING");
@@ -79,6 +79,10 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
                 socketCommunication.stopClient();
                 btnSet.setText("SET");
             }
+        }
+        if (view == btnConnect){
+            Intent intent = new Intent(getApplicationContext(),ConnectActivity.class);
+            startActivity(intent);
         }
     }
 }

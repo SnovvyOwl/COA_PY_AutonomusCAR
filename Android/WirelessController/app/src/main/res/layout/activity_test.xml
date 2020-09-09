@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="30dp"
-    tools:context=".TestActivity">
+    tools:context=".ConnectActivity">
 
     <EditText
         android:layout_width="match_parent"
