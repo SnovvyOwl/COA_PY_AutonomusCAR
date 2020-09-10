@@ -22,7 +22,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_connect);
 
         btn1 = (Button)findViewById(R.id.btn1);
         btn2 = (Button)findViewById(R.id.btn2);
@@ -34,59 +34,6 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         btn2.setOnClickListener(this);
 
     }
-
-//    void startClient() {
-//        Thread thread = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    socket = new Socket();
-//                    String ip = "10.0.2.2";
-//                    String rasp = "bluetank.iptime.org";
-//                    socket.connect(new InetSocketAddress("localhost", 5001));
-//                    txt1.setText("[연결 완료: "  + socket.getRemoteSocketAddress() + "]");
-//                    btn1.setText("stop"); //connect
-//                    btn2.setClickable(true); //send
-//                } catch(Exception e) {
-//                    txt1.setText("[서버 통신 안됨]");
-//                    if(!socket.isClosed()) { stopClient(); }
-//                    return;
-//                }
-//            }
-//        };
-//        thread.start();
-//    }
-//
-//    void stopClient() {
-//        try {
-//            txt1.setText("[연결 끊음]");
-//            btn1.setText("CONNECT"); //connect
-//            btn2.setClickable(false); //send
-//            if(socket!=null && !socket.isClosed()) {
-//                socket.close();
-//            }
-//        } catch (IOException e) {}
-//    }
-//
-//
-//    void send(final String data) {
-//        Thread thread = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    byte[] byteArr = data.getBytes("UTF-8");
-//                    OutputStream outputStream = socket.getOutputStream();
-//                    outputStream.write(byteArr);
-//                    outputStream.flush();
-//                    txt1.setText("[전송 완료]");
-//                } catch(Exception e) {
-//                    txt1.setText("[서버 통신 안됨]");
-//                    stopClient();
-//                }
-//            }
-//        };
-//        thread.start();
-//    }
 
     @Override
     public void onClick(View view) {
