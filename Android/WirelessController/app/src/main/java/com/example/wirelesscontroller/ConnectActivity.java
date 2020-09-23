@@ -2,6 +2,7 @@ package com.example.wirelesscontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -60,6 +61,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        socketCommunication.stopClient();
+//        socketCommunication.stopClient();     // socket이 열려있을 경우에만 작동
+        finish();
     }
 }

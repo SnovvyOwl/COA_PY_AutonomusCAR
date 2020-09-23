@@ -13,7 +13,7 @@ public class SocketCommunication {
 
     Socket socket;
 //    String ip = "10.0.2.2";
-    String ip = "192.168.0.9";
+    String ip = "bluetank.iptime.org";
     int port = 5005;
 
     void startClient() {
@@ -29,8 +29,6 @@ public class SocketCommunication {
                     return;
                 }
             }
-
-
         };
         thread.start();
     }
@@ -49,16 +47,13 @@ public class SocketCommunication {
                 byte[] byteArr = new byte[100];
                 InputStream inputStream = socket.getInputStream();
 
-                //������ ������������ �������� ��� IOException �߻�
                 int readByteCount = inputStream.read(byteArr);
 
-                //������ ���������� Socket�� close()�� ȣ������ ���
                 if(readByteCount == -1) { throw new IOException(); }
 
                 String data = new String(byteArr, 0, readByteCount, "UTF-8");
 
             } catch (Exception e) {
-//                Platform.runLater(()->displayText("[���� ��� �ȵ�]"));
                 stopClient();
                 break;
             }
