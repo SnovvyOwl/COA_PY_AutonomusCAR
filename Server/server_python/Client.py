@@ -11,7 +11,7 @@ class Client:
         sock.connect(server_address)
 
         try:
-            message = 'This is the message.'
+            message = 'rr'
             print("sending " + message)
             sock.send(message.encode('utf-8'))
 
