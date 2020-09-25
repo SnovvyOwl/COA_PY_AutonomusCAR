@@ -12,8 +12,8 @@ import java.net.URL;
 public class SocketCommunication {
 
     Socket socket;
-//    String ip = "10.0.2.2";
-    String ip = "bluetank.iptime.org";
+    String ip = "10.0.2.2";
+//    String ip = "bluetank.iptime.org";
     int port = 5005;
 
     void startClient() {
@@ -24,6 +24,7 @@ public class SocketCommunication {
                 try {
                     socket = new Socket();
                     socket.connect(new InetSocketAddress(ip, port));
+                    send("c");
                 } catch(Exception e) {
                     if(!socket.isClosed()) { stopClient(); }
                     return;
