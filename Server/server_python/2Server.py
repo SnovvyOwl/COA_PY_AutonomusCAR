@@ -69,7 +69,7 @@ if __name__ == '__main__':
     server.startServer()
 
     try:
-        while KeyboardInterrupt:
+        while True:
             # Wait for a connection
             print("wait")
             connection, client_address = server.mSocket.accept()
