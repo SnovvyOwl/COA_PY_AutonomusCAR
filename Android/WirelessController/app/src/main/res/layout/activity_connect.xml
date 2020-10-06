@@ -7,12 +7,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:padding="30dp"
     tools:context=".ConnectActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="IP address / local 10.0.2.2"
+        android:id="@+id/edt1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="PORT number"
+        android:id="@+id/edt2"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello world!"
-        android:textSize="30sp"/>
+        android:layout_margin="30dp"
+        android:textSize="30sp"
+        android:id="@+id/text1"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="CONNECT"
+        android:id="@+id/btn1"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="SEND"
+        android:id="@+id/btn2"/>
 
 </LinearLayout>

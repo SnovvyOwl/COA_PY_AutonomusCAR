@@ -10,7 +10,7 @@ class Socketclient(object):
         self.status ="vel, angle" # Car's status
        
     def check(self):
-        self.client_socket.send('I am a Client.'.encode('utf-8'))
+        self.client_socket.send('r'.encode('utf-8'))
         self.receive_CMD_and_send_status()
         print (self.CMD)
    
@@ -24,6 +24,6 @@ class Socketclient(object):
 
 
 if __name__ == '__main__':
-    client = Socketclient('192.168.35.125',8080)
+    client = Socketclient("localhost",5005)
     client.check()
     client.connect_close()
