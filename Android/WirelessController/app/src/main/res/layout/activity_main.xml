@@ -1,42 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/btn1"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/btn1"
     tools:context=".MainActivity">
 
-    <TextView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="80dp" />
+
+    <TextView
+        android:id="@+id/txt222"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
         android:text="Hello World!"
-        android:textSize="30sp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="40sp"
+        android:fontFamily="@font/font"
+        app:layout_constraintBottom_toTopOf="@id/main_btn1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0.2"
+
+        />
 
     <Button
-        android:layout_width="200dp"
+        android:id="@+id/main_btn1"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:text="@string/main_btn1"
-        android:id="@+id/main_btn1"/>
+        android:background="@drawable/colorbtn1"
+        android:gravity="left|center_vertical"
+        android:textSize="30sp"
+        android:fontFamily="@font/font"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/main_btn2"
+        app:layout_constraintLeft_toLeftOf="@id/guidline"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt222"
+        app:layout_constraintHorizontal_bias="0"/>
 
     <Button
-        android:layout_width="200dp"
+        android:id="@+id/main_btn2"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:text="@string/main_btn2"
-        android:id="@+id/main_btn2"/>
+        android:background="@drawable/colorbtn1"
+        android:gravity="left|center_vertical"
+        android:textSize="30sp"
+        android:fontFamily="@font/font"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/main_btn3"
+        app:layout_constraintLeft_toLeftOf="@id/guidline"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn1"
+        app:layout_constraintHorizontal_bias="0"/>
 
     <Button
-        android:layout_width="200dp"
+        android:id="@+id/main_btn3"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:text="@string/main_btn3"
-        android:id="@+id/main_btn3"/>
+        android:background="@drawable/colorbtn1"
+        android:gravity="left|center_vertical"
+        android:textSize="30sp"
+        android:fontFamily="@font/font"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/guidline"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn2"
+        app:layout_constraintHorizontal_bias="0"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
