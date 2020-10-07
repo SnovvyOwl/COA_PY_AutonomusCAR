@@ -4,26 +4,18 @@ from multiprocessing import Process, Queue, freeze_support
 from HW_controller.AD_RP_serial import *
 import time
 class Client:
-    def __init__(self):
+    def __init__(self,ip,port):
         #Socket
-        self.ip = "localhost" # need to change server IP
-        self.port = 5005
-        self.sock=""
+        self.ip = ip 
+        self.port = port
+        self.sock = ""
         
         #Serial
         self.arduino = Serial_communication() 
         self.position = Position_status()
 
     def receive(self, toclient):
-        message = "r"
-        amount_received = 0
-        amount_expected = len(message)
-
-        while amount_received < amount_expected:
-            data = self.sock.recv(1024)
-            amount_received += len(data)
-            #print("received " + data.decode())
-            amount_received = 0
+        data = self.sock.recv(1024)
         toclient.put(data.decode())    
         
     def send(self,toserver):
@@ -54,13 +46,13 @@ class Client:
         try:
             send_msg = Queue()
             recive_msg = Queue()
-            sending= Process(target=self.send, args=(send_msg))
-            reciveing=Process(target=self.receive,arg=(recive_msg))
+            sending = Process(target=self.send, args=(send_msg))
+            reciveing = Process(target=self.receive,arg=(recive_msg))
             sending.start()
             reciveing.start()
             while True:
                 reciveing.join()
-                command=recive_msg.get()
+                command = recive_msg.get()
 
                 # Arduino Parts
                 Start_point = time.time()
@@ -89,5 +81,5 @@ class Client:
 
 if __name__ == '__main__':
     freeze_support()
-    client = Client()
+    client = Client(192.168.0.74,5005)
     client.startClient()
