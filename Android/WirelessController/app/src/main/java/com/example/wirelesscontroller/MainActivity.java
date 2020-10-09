@@ -30,13 +30,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == btn1){
             Intent intent = new Intent(getApplicationContext(), ConnectActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
         }
         if (view == btn2){
             Intent intent = new Intent(getApplicationContext(),ControllerActivity.class);
             startActivity(intent);
         }
         if (view == btn3){
-
+            Intent intent = new Intent(getApplicationContext(),SettingsActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.wirelesscontroller;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -12,12 +13,19 @@ import java.net.URL;
 public class SocketCommunication {
 
     Socket socket;
-    String ip = "10.0.2.2";
-//    String ip = "bluetank.iptime.org";
-    int port = 5005;
+    String ip ;
+    int port ;
+
+    SocketCommunication(String ip, int port){
+        if (ip.isEmpty()) this.ip = "10.0.2.2";
+        if (port == 0) this.port = 5005;
+
+        this.ip = ip;
+        this.port = port;
+    }
 
     void startClient() {
-
+        final boolean check = false;
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -27,7 +35,6 @@ public class SocketCommunication {
                     send("c");
                 } catch(Exception e) {
                     if(!socket.isClosed()) { stopClient(); }
-                    return;
                 }
             }
         };

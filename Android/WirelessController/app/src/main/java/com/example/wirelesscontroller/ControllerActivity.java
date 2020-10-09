@@ -2,6 +2,7 @@ package com.example.wirelesscontroller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,12 +22,16 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     TextView txtConnect;
 
     SocketCommunication socketCommunication;
+    SharedPreferences appData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_controller);
-        socketCommunication = new SocketCommunication();
+        socketCommunication = new SocketCommunication(
+                PreferenceManager.getString(this,"IP"),
+                PreferenceManager.getInt(this,"PORT"));
 
         txtSpeed = (TextView) findViewById(R.id.text);
         txtDir = (TextView) findViewById(R.id.text2);
@@ -84,5 +89,11 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
             Intent intent = new Intent(getApplicationContext(),ConnectActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

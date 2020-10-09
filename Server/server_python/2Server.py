@@ -22,6 +22,7 @@ class SocketCommunication:
         server_address = (self.ip, self.port)
         self.mSocket.bind(server_address)
         self.mSocket.listen(2)
+        self.mSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def stopServer(self):
         print("[stop server]")
@@ -68,10 +69,12 @@ if __name__ == '__main__':
     server = SocketCommunication()
     server.startServer()
 
+
     try:
         while True:
             # Wait for a connection
             print("wait")
+
             connection, client_address = server.mSocket.accept()
             data = connection.recv(1024)  # 8Byte를 기다린다.
             check = data.decode()  # 속성 판단 receiver vs controller

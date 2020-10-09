@@ -38,7 +38,9 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        socketCommunication = new SocketCommunication();
+        socketCommunication = new SocketCommunication(
+                PreferenceManager.getString(this,"IP"),
+                PreferenceManager.getInt(this,"PORT"));
 
         if(view == btn1){
             if (btn1.getText().equals("CONNECT")){
@@ -63,5 +65,6 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         super.onBackPressed();
 //        socketCommunication.stopClient();     // socket이 열려있을 경우에만 작동
         finish();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 }

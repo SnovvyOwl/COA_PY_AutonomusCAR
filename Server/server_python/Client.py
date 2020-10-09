@@ -81,5 +81,5 @@ class Client:
 
 if __name__ == '__main__':
     freeze_support()
-    client = Client(192.168.0.74,5005)
+    client = Client("192.168.0.74",5005)
     client.startClient()
