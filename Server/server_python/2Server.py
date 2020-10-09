@@ -20,9 +20,10 @@ class SocketCommunication:
         # print("\n",, "can connectable this server")
 
         server_address = (self.ip, self.port)
+        self.mSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.mSocket.bind(server_address)
         self.mSocket.listen(2)
-        self.mSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
 
     def stopServer(self):
         print("[stop server]")
