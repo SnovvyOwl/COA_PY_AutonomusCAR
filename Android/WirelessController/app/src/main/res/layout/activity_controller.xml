@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="30dp"
     android:layout_margin="10dp"
-    android:background="@drawable/controllerbgr"
+    android:background="@drawable/bgr1"
     tools:context=".ControllerActivity">
 
     <LinearLayout
@@ -22,11 +22,11 @@
             android:layout_height="280dp">
 
             <ImageView
-                android:layout_width="30dp"
+                android:layout_width="20dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/controller1"/>
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:background="@drawable/controller2l"/>
         </RelativeLayout>
 
     </LinearLayout>
@@ -42,21 +42,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="on"
-            android:textSize="30sp"
+            android:text="CHECK"
+            android:textSize="20sp"
             android:id="@+id/text3"/>
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CON"
-            android:id="@+id/btn_connect"/>
+            android:id="@+id/btn_connect"
+            android:background="@drawable/controllerbtn1"
+            android:layout_marginBottom="30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CONNECT"
+            android:textSize="20sp"
+            android:id="@+id/text4"/>
+
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/btn_set"
             android:text="SET"
-            android:id="@+id/btn_set"/>
+            android:background="@drawable/controllerbtn2"/>
 
     </LinearLayout>
 
@@ -70,7 +80,7 @@
         <ViewFlipper
             android:layout_width="280dp"
             android:layout_height="match_parent"
-            android:background="@drawable/controllerbgr2"
+            android:background="@drawable/bgr2"
             android:layout_weight="1">
 
             <LinearLayout
@@ -113,10 +123,10 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:background="@drawable/controller2"/>
+                    android:layout_height="20dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginBottom="35dp"
+                    android:background="@drawable/controller2r"/>
 
             </RelativeLayout>
 

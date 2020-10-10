@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,6 +52,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         public void onClick(DialogInterface dialogInterface, int i) {
                             edtIpDlg = (EditText) dialogView.findViewById(R.id.edt_ip_dlg);
                             edtPortDlg = (EditText) dialogView.findViewById(R.id.edt_port_dlg);
+
+                            if (edtIpDlg.length() == 0 || edtPortDlg.length() == 0){
+                                Toast.makeText(dialogView.getContext(),"입력을 바르게 해주세요!",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
                             txtIp.setText(edtIpDlg.getText());
                             txtPort.setText(edtPortDlg.getText());

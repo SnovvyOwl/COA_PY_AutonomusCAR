@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btn1){
-            Intent intent = new Intent(getApplicationContext(), ConnectActivity.class);
+            Intent intent = new Intent(getApplicationContext(), TestActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
         }

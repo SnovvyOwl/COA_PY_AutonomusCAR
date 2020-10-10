@@ -38,7 +38,7 @@ class Client:
     def __init__(self, connection, clinet_address):
         self.connection = connection
         self.client_address = clinet_address
-        # self.receive()
+        self.receive()
 
         # self.thread = Thread(self.receive())
         # self.thread.start()
@@ -46,8 +46,11 @@ class Client:
     def receive(self):
         try:
             while True:
+
                 data = self.connection.recv(1024)  # 8Byte를 기다린다.
                 CMD = data.decode()
+                if CMD == "":
+                    break
                 print("controller: ", CMD)
 
         except ConnectionResetError:
@@ -56,8 +59,11 @@ class Client:
 
         finally:
             self.connection.close()
+            # print(self.client_address[0],"connection closed")     #only ip
+            print(self.client_address, "connection closed")
+
             # self.thread.close()
-            print("connection closed")
+
 
     def send(self, data):
         self.connection.send(data.encode('utf-8'))

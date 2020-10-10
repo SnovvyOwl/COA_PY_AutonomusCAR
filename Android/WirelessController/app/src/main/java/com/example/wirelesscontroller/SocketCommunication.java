@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 
 public class SocketCommunication {
@@ -16,6 +17,11 @@ public class SocketCommunication {
     String ip ;
     int port ;
 
+    SocketCommunication(){
+        this.ip = "10.0.2.2";
+        this.port = 5005;
+    }
+
     SocketCommunication(String ip, int port){
         if (ip.isEmpty()) this.ip = "10.0.2.2";
         if (port == 0) this.port = 5005;
@@ -23,6 +29,8 @@ public class SocketCommunication {
         this.ip = ip;
         this.port = port;
     }
+
+
 
     void startClient() {
         final boolean check = false;
@@ -33,8 +41,12 @@ public class SocketCommunication {
                     socket = new Socket();
                     socket.connect(new InetSocketAddress(ip, port));
                     send("c");
+                } catch (SocketException e){
+                    stopClient();
+                    System.out.println(e);
                 } catch(Exception e) {
                     if(!socket.isClosed()) { stopClient(); }
+                    System.out.println(e);
                 }
             }
         };
@@ -43,10 +55,12 @@ public class SocketCommunication {
 
     void stopClient() {
         try {
-            if(socket!=null && !socket.isClosed()) {
+            if(socket!=null && socket.isConnected()) {
                 socket.close();
             }
-        } catch (IOException e) {}
+        } catch (IOException e){
+            System.out.println(e);
+        }
     }
 
     void receive() {

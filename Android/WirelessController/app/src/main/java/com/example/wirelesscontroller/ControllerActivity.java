@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 public class ControllerActivity extends Activity implements View.OnTouchListener, View.OnClickListener {
 
@@ -41,8 +43,8 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         layout_ctrSpeed.setOnTouchListener(this);
         layout_ctrDirection.setOnTouchListener(this);
 
-        speedController = new SwipeController(getApplicationContext(), layout_ctrSpeed,R.drawable.stick5,true,70);
-        directionController = new SwipeController(getApplicationContext(), layout_ctrDirection,R.drawable.stick4,false,70);
+        speedController = new SwipeController(getApplicationContext(), layout_ctrSpeed,R.drawable.stickl,true,70);
+        directionController = new SwipeController(getApplicationContext(), layout_ctrDirection,R.drawable.stickr,false,70);
 
         speedController.setStickSize(200,140);
         speedController.setStickCenter();
@@ -63,6 +65,12 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
             speedController.drawStick(motionEvent);
             txtSpeed.setText((100 - speedController.percent)+"");
             socketCommunication.send(txtSpeed.getText().toString() + "속도");
+
+//            try {
+//                socketCommunication.send(socketCommunication.socket.getSendBufferSize() + "");
+//            } catch (SocketException e) {
+//                e.printStackTrace();
+//            }
             return true;
         }
         if (view == layout_ctrDirection){
@@ -78,22 +86,33 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     public void onClick(View view) {
         if (view == btnSet){
             if (btnSet.getText().equals("SET")){
+                if (socketCommunication.socket != null && socketCommunication.socket.isConnected()){
+                    btnSet.setText("ING");
+                }
                 socketCommunication.startClient();
-                btnSet.setText("ING");
+
             } else if (btnSet.getText().equals("ING")){
                 socketCommunication.stopClient();
-                btnSet.setText("SET");
+                if (socketCommunication.socket.isClosed()){
+                    btnSet.setText("SET");
+                }
+
             }
         }
         if (view == btnConnect){
-            Intent intent = new Intent(getApplicationContext(),ConnectActivity.class);
-            startActivity(intent);
+            if (socketCommunication.socket != null && socketCommunication.socket.isConnected() && !socketCommunication.socket.isClosed()){
+                Toast.makeText(this,"socket is connected",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,"socket is not connected",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        if (socketCommunication.socket != null && socketCommunication.socket.isConnected() && !socketCommunication.socket.isClosed()){
+            socketCommunication.stopClient();
+        }
     }
 }
