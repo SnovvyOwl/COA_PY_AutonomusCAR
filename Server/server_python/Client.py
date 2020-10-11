@@ -4,18 +4,18 @@ from multiprocessing import Process, Queue, freeze_support
 from HW_controller.AD_RP_serial import *
 import time
 class Client:
-    def __init__(self,ip,port):
+    def __init__(self):
         #Socket
-        self.ip = ip 
-        self.port = port
-        self.sock = ""
+        self.ip = "bluetank.iptime.org" # need to change server IP
+        self.port = 13000
+        self.sock=""
         
         #Serial
         self.arduino = Serial_communication() 
         self.position = Position_status()
 
     def receive(self, toclient):
-        data = self.sock.recv(1024)
+        data = self.sock.recv(4)
         toclient.put(data.decode())    
         
     def send(self,toserver):
@@ -46,40 +46,66 @@ class Client:
         try:
             send_msg = Queue()
             recive_msg = Queue()
-            sending = Process(target=self.send, args=(send_msg))
-            reciveing = Process(target=self.receive,arg=(recive_msg))
-            sending.start()
-            reciveing.start()
+            sending= Process(target=self.send, args=(send_msg,))
+            
+           
             while True:
+                Start_point=time.time()
+                sending.start()
+                reciveing=Process(target=self.receive,args=(recive_msg,))
+                reciveing.start()
                 reciveing.join()
-                command = recive_msg.get()
-
+                command=recive_msg.get()
+                reciveing.close()
+                print(command)
+                if command=="Test":
+                    self.position.LR_desire=255
+                    self.position.BF_desire=0
+                    print(self.position.LR_desire)
+                    
+                elif command=="call":
+                    self.position.LR_desire=-255
+                    self.position.BF_desire=0
+                    print(self.position.LR_desire)
+                    
+                    
                 # Arduino Parts
                 Start_point = time.time()
                 self.arduino.Value_to_T_data(self.position.BF_desire, self.position.LR_desire)
-                self.arduinoSerial_write()
-                self.arduinoSerial_read()
+                self.arduino.Serial_write()
+                time.sleep(1)
+                self.arduino.Serial_read()
                 if self.arduino.R_data != "":
                     print(self.arduino.R_data)
                     send_msg.put(self.arduino.R_data)
-                    send_msg.join()
+                    sending.join()
+                     
                 End_point = time.time()
+                sending.terminate()
+                sending.close()
                 time.sleep(self.arduino.Loop_time-(End_point-Start_point))
-                reciveing.run()
-                send_msg.run()      
+                
+                 
+        
         
         except KeyboardInterrupt:
             print("Emergency stop!!!!")
             self.sock.close()
+            reciveing.terminate()
+            sending.terminate()
             reciveing.close()
-            send_msg.close()    
+            sending.close()
+            
         finally:
             print("OFF")
             self.sock.close()
+            reciveing.terminate()
+            sending.terminate()
             reciveing.close()
-            send_msg.close()    
+            sending.close()    
 
 if __name__ == '__main__':
     freeze_support()
-    client = Client("192.168.0.74",5005)
+    client = Client()
     client.startClient()
+
