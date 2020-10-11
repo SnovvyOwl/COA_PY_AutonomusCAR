@@ -6,7 +6,7 @@ class SocketCommunication:
     def __init__(self, ip=None, port=None):
         self.mSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if ip is None:
-            self.ip = "localhost"
+            self.ip = "192.168.0.9"
         if port is None:
             self.port = 5005
             return
@@ -35,10 +35,13 @@ class SocketCommunication:
 
 
 class Client:
-    def __init__(self, connection, clinet_address):
+    def __init__(self, connection, clinet_address , mode):
         self.connection = connection
         self.client_address = clinet_address
-        self.receive()
+        if mode == 1:
+            self.receive()
+        if mode == 2:
+            self.send("Test")
 
         # self.thread = Thread(self.receive())
         # self.thread.start()
@@ -66,6 +69,7 @@ class Client:
 
 
     def send(self, data):
+
         self.connection.send(data.encode('utf-8'))
 
 
@@ -90,12 +94,12 @@ if __name__ == '__main__':
 
             if check == "c":
                 print("controller is connected.")
-                thread = Thread(target=Client, args=(connection, client_address))
+                thread = Thread(target=Client, args=(connection, client_address,1))
                 thread.start()
 
             elif check == "r":
                 print("receiver is connected.")
-                thread = Thread(target=Client, args=(connection, client_address))
+                thread = Thread(target=Client, args=(connection, client_address,2))
                 thread.start()
 
             else:

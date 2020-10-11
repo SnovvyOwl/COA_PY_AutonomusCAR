@@ -46,10 +46,10 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         speedController = new SwipeController(getApplicationContext(), layout_ctrSpeed,R.drawable.stickl,true,70);
         directionController = new SwipeController(getApplicationContext(), layout_ctrDirection,R.drawable.stickr,false,70);
 
-        speedController.setStickSize(200,140);
+        speedController.setStickSize(140,100);
         speedController.setStickCenter();
 
-        directionController.setStickSize(140,200);
+        directionController.setStickSize(100,140);
         directionController.setStickCenter();
 
         txtConnect = (TextView)findViewById(R.id.text3);
