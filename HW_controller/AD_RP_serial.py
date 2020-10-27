@@ -4,9 +4,9 @@ import RPi.GPIO as GPIO
 
 
 class Serial_communication():
-    def __init__(self):
+    def __init__(self,port='/dev/ttyACM1'):
         #Serial communication information
-        self.port = '/dev/ttyUSB0'
+        self.port =port
         self.baud = 115200
         self.timeout = 0
         

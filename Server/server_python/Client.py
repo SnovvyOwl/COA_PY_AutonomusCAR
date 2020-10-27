@@ -6,12 +6,12 @@ import time
 class Client:
     def __init__(self):
         #Socket
-        self.ip = "bluetank.iptime.org" # need to change server IP
+        self.ip = "bluetank.iptime.org"# need to change server IP
         self.port = 13000
         self.sock=""
         
         #Serial
-        self.arduino = Serial_communication() 
+        self.arduino = Serial_communication('/dev/ttyACM1') 
         self.position = Position_status()
 
     def receive(self, toclient):
@@ -46,10 +46,9 @@ class Client:
         try:
             send_msg = Queue()
             recive_msg = Queue()
-            sending= Process(target=self.send, args=(send_msg,))
-            
-           
+
             while True:
+                sending= Process(target=self.send, args=(send_msg,))
                 Start_point=time.time()
                 sending.start()
                 reciveing=Process(target=self.receive,args=(recive_msg,))
@@ -79,14 +78,11 @@ class Client:
                     print(self.arduino.R_data)
                     send_msg.put(self.arduino.R_data)
                     sending.join()
+                    sending.close()
                      
-                End_point = time.time()
-                sending.terminate()
-                sending.close()
-                time.sleep(self.arduino.Loop_time-(End_point-Start_point))
+                #End_point = time.time()
+                #time.sleep(self.arduino.Loop_time-(End_point-Start_point))
                 
-                 
-        
         
         except KeyboardInterrupt:
             print("Emergency stop!!!!")
@@ -99,13 +95,9 @@ class Client:
         finally:
             print("OFF")
             self.sock.close()
-            reciveing.terminate()
-            sending.terminate()
-            reciveing.close()
-            sending.close()    
+ 
 
 if __name__ == '__main__':
     freeze_support()
     client = Client()
     client.startClient()
-
