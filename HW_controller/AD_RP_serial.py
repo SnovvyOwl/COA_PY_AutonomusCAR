@@ -40,12 +40,15 @@ class Serial_communication():
             print('Waiting connection.')
             self.Serial_read()
             if self.R_data == "TEST":
+                return 0
                 break;
             elif i == timeout :
-                print('Test fail');
+                print('Test fail')
+                return 1
                 break;
             else:
                 i += 1
+        
     
     def Serial_write(self):
         self.ser.write('@'.encode('utf-8') + self.T_data.encode("utf-8") + '#'.encode('utf-8'))

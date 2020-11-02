@@ -1,26 +1,27 @@
 # 실제 사용시 최상위폴더로 옮겨질 필요가 있음.
 import socket
+import sys
 from multiprocessing import Process, Queue, freeze_support
 from HW_controller.AD_RP_serial import *
 import time
 class Client:
     def __init__(self):
         #Socket
-        self.ip = "bluetank.iptime.org"# need to change server IP
-        self.port = 13000
+        self.ip = "192.168.42.64"# need to change server IP
+        self.port = 8080
         self.sock=""
         
         #Serial
-        self.arduino = Serial_communication('/dev/ttyACM1') 
+        self.arduino = Serial_communication('/dev/ttyACM0') 
         self.position = Position_status()
 
     def receive(self, toclient):
-        data = self.sock.recv(4)
+        data = self.sock.recv(16)
         toclient.put(data.decode())    
         
     def send(self,toserver):
         msg = toserver.get()
-        self.sock.send(msg.encode('utf-8'))
+        self.sock.sendall(msg.encode('utf-8'))
 
     def startClient(self):
         self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -28,18 +29,17 @@ class Client:
         self.sock.connect(server_address)
 
         try:
+
+            if (self.arduino.Start_setup()==1):
+                sys.exit()
+            #self.server_msg(message)
             message = 'r'
             print("sending " + message)
             self.sock.send(message.encode('utf-8'))
-            self.arduino.Start_setup()
-            #self.server_msg(message)
-    
-        except ConnectionResetError:
-            print("Disconnect from Server")
-
-        finally:
             print("run Client")
             self.runClient()
+        except ConnectionResetError:
+            print("Disconnect from Server")
 
         
     def runClient(self):
@@ -60,12 +60,14 @@ class Client:
                 if command=="Test":
                     self.position.LR_desire=255
                     self.position.BF_desire=0
-                    print(self.position.LR_desire)
+                    #print(self.position.LR_desire)
                     
                 elif command=="call":
                     self.position.LR_desire=-255
                     self.position.BF_desire=0
-                    print(self.position.LR_desire)
+                    #print(self.position.LR_desire)
+                elif command=="quit":
+                    sys.exit()
                     
                     
                 # Arduino Parts
@@ -75,7 +77,7 @@ class Client:
                 time.sleep(1)
                 self.arduino.Serial_read()
                 if self.arduino.R_data != "":
-                    print(self.arduino.R_data)
+                    #print(self.arduino.R_data)
                     send_msg.put(self.arduino.R_data)
                     sending.join()
                     sending.close()
@@ -101,3 +103,4 @@ if __name__ == '__main__':
     freeze_support()
     client = Client()
     client.startClient()
+
