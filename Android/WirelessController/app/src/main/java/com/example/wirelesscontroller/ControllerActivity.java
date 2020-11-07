@@ -64,7 +64,8 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         if (view == layout_ctrSpeed){
             speedController.drawStick(motionEvent);
             txtSpeed.setText((100 - speedController.percent)+"");
-            socketCommunication.send(txtSpeed.getText().toString() + "속도");
+            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
+//            socketCommunication.send(txtSpeed.getText().toString() + "속도");
 
 //            try {
 //                socketCommunication.send(socketCommunication.socket.getSendBufferSize() + "");
@@ -76,7 +77,8 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         if (view == layout_ctrDirection){
             directionController.drawStick(motionEvent);
             txtDir.setText(directionController.percent+"");
-            socketCommunication.send(txtDir.getText().toString() + "방향");
+            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
+//            socketCommunication.send(txtDir.getText().toString() + "방향");
             return true;
         }
         return false;
@@ -106,6 +108,10 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
                 Toast.makeText(this,"socket is not connected",Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private String makeData(String str1, String str2){
+        return ("#" + str1 + "%" + str2);
     }
 
     @Override
