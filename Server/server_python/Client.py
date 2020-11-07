@@ -7,8 +7,8 @@ import time
 class Client:
     def __init__(self):
         #Socket
-        self.ip = "192.168.42.64"# need to change server IP
-        self.port = 8080
+        self.ip = "bluetank.iptime.org"# need to change server IP
+        self.port = 13000
         self.sock=""
         
         #Serial
@@ -16,7 +16,7 @@ class Client:
         self.position = Position_status()
 
     def receive(self, toclient):
-        data = self.sock.recv(16)
+        data = self.sock.recv(8)
         toclient.put(data.decode())    
         
     def send(self,toserver):
@@ -27,7 +27,7 @@ class Client:
         self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         server_address = (self.ip,self.port)
         self.sock.connect(server_address)
-
+        print("start")
         try:
 
             if (self.arduino.Start_setup()==1):
@@ -103,4 +103,3 @@ if __name__ == '__main__':
     freeze_support()
     client = Client()
     client.startClient()
-
