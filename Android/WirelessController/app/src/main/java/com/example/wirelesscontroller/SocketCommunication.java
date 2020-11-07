@@ -90,6 +90,7 @@ public class SocketCommunication {
                     byte[] byteArr = data.getBytes("UTF-8");
                     OutputStream outputStream = socket.getOutputStream();
                     outputStream.write(byteArr);
+                    System.out.println(byteArr.length);
                     outputStream.flush();
                 } catch(Exception e) {
                     stopClient();
