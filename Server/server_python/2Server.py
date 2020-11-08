@@ -1,12 +1,13 @@
 import socket
 from threading import Thread
+from queue import Queue
 
 
 class SocketCommunication:
     def __init__(self, ip=None, port=None):
         self.mSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if ip is None:
-            self.ip = "localhost"
+            self.ip = "192.168.0.18"
         if port is None:
             self.port = 5005
             return
@@ -38,10 +39,11 @@ class Client:
     def __init__(self, connection, clinet_address , mode):
         self.connection = connection
         self.client_address = clinet_address
+
         if mode == 1:
             self.receive()
         if mode == 2:
-            self.send("Test")
+            self.sending()
 
         # self.thread = Thread(self.receive())
         # self.thread.start()
@@ -50,10 +52,11 @@ class Client:
         try:
             while True:
 
-                data = self.connection.recv(1024)  # 8Byte를 기다린다.
+                data = self.connection.recv(8)  # 8Byte를 기다린다.
                 CMD = data.decode()
                 if CMD == "":
                     break
+                msg.put(CMD)
                 print("controller: ", CMD)
 
         except ConnectionResetError:
@@ -67,10 +70,23 @@ class Client:
 
             # self.thread.close()
 
+    def sending(self):
 
-    def send(self, data):
+        try:
+            while True:
+                self.connection.send(msg.get().encode('utf-8'))
+                print("sent ! -! ")
 
-        self.connection.send(data.encode('utf-8'))
+        except ConnectionResetError:
+            # self.thread.close()
+            print("disconnect from client")
+
+        finally:
+            self.connection.close()
+            # print(self.client_address[0],"connection closed")     #only ip
+            print(self.client_address, "connection closed")
+
+            # self.thread.close()
 
 
 if __name__ == '__main__':
@@ -80,8 +96,10 @@ if __name__ == '__main__':
     server = SocketCommunication()
     server.startServer()
 
+    msg = Queue()
 
     try:
+
         while True:
             # Wait for a connection
             print("wait")
