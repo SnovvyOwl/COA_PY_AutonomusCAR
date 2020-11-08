@@ -14,7 +14,7 @@
 using namespace std;
 class RasPi{
     private:
-        string ip ="192.168.35.125";
+        string ip ="";
         int port=8080;
         int client=0;
         string ser_port="/dev/ttyACM0";

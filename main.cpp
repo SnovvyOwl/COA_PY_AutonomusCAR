@@ -20,11 +20,8 @@ int main(){
         Nano.Value_to_T_data();
         Nano.Serial_write();
         Nano.Serial_read();
-    
-        
-        
     }*/
-    RasPi  car("192.168.35.125",8080);
+    RasPi  car("localhost",13000);
 
     return 0;
 }
