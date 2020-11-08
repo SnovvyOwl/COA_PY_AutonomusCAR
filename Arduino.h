@@ -19,12 +19,12 @@ class Arduino{
         int LR_desire = 0;
 
     public:
-        Arduino(string _port,int _baud): //Generater
-            port(_port),baud(_baud)
-        {
-            if((arduino = serialOpen(port,baud))<0){
+        Arduino(string port,int _baud) //Generater
+            
+        {   port=port;
+            baud=_baud;
+            if((arduino = serialOpen(port.c_str(),baud))<0){
                 cerr<<"Unable to open Arduino Nano"<<endl;
-	            return 1;
             }
             Start_setup();
         };
@@ -41,9 +41,9 @@ class Arduino{
             digitalWrite(Channel_reset, LOW);        //Reset arduino
             delay(1000);
             digitalWrite(Channel_reset,HIGH);
-            Serial_check();
+            Serial_check(5);
         }   
-        int Serial_check(self, timeout = 5){
+        int Serial_check(int timeout){
             int i = 0;
             while (1){
                 T_data = "TEST";
@@ -75,35 +75,33 @@ class Arduino{
                 R_data = "";
                 while (1){
                     Temp = char(serialGetchar(arduino));
-                    if Temp == '#'{
+                    if (Temp == '#'){
                         break;
                     }
-                    else if (Temp != '@' & Temp != '#' & Temp != ''){
+                    if(Temp != '@' & Temp != '#' & Temp){
                     R_data = R_data + Temp;
-                    }
-                    else{
                     }
                 }
             }           
             else{
-                R_data = '';
+                R_data = "";
             }   
         } 
         void Value_to_T_data(){
             string BF_position = "";
             string LR_position = "";
             if (BF_desire>= 0){
-                BF_position = "F" + str(BF_desire);
+                BF_position = "F" + to_string(BF_desire);
             }  
             else{
-                BF_position = "B" + str(-1*BF_desire);
+                BF_position = "B" + to_string(-1*BF_desire);
             }
             if (LR_desire>= 0){
-                LR_position = "R" + str(LR_desire);
+                LR_position = "R" + to_string(LR_desire);
             }  
             else{
-                LR_position = "L" + str(-1*LR_desire);
+                LR_position = "L" + to_string(-1*LR_desire);
             }
             T_data = BF_position + LR_position;
         }
-}
+};

@@ -7,6 +7,6 @@ int main(){
     if(wiringPiSetup()==-1){
         return 1;
     }
-    car=RasPi("192.168.0.42",8080);
+    RasPi  car("192.168.0.42",8080);
     return 0;
 }

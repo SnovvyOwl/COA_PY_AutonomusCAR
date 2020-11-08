@@ -14,33 +14,34 @@
 using namespace std;
 class RasPi{
     private:
-        string ip ="bluetank.iptime.org";
-        int port=13000;
+        string ip ="192.168.35.125";
+        int port=8080;
         int client=0;
-        int nano=0;
+        Arduino nano("/dev/ttyACM0" ,115200);
         struct sockaddr_in server_addr;
         string sock_receive="";
         string sock_send="";
         
     public:
-        RasPi(string server_ip,int _port):
-            ip(server_ip),port(_port)
-        {
-            nano=Arduino("/dev/ttyACM0",115200);
+        RasPi(string server_ip,int _port)
+        {   
+            ip=server_ip;
+            port=_port;
+            
             client = socket( AF_INET, SOCK_STREAM, 0);
             if(client==-1){
                 cerr<< "\n Socket creation error \n";
-                return -1;
+                sock_receive="quit";
             }
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(port);
             if(inet_pton(AF_INET,ip, &serv_addr.sin_addr)<=0){ 
-                cerr<<"\nInvalid address/ Address not supported \n"; 
-                return -1; 
+                cerr<<"\nInvalid address/ Address not supported \n";
+                sock_receive="quit";
             } 
            if (connect(client, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){    
                 cerr<<"\nConnection Failed \n"; 
-                return -1; 
+                sock_receive="quit";
             }
             startClient();
         };
@@ -50,7 +51,7 @@ class RasPi{
                 read(client,buffer,BUFF_SIZE);
                 sock_receive=buffer;
                 cout<<sock_receive<endl;
-                nano.Serial_read();
+                nano.arduino.Serial_read();
                 if (msg=="quit"){
                     break;
                 }
@@ -60,7 +61,7 @@ class RasPi{
             while(true){
                 send(client,sock_send.c_str(), strlen(sock_send.c_str()),0);
                 nano.Value_to_T_data();
-                nano.Serial_write();
+                nano.arduino.Serial_write();
                 if (msg=="quit"){
                     break;
                 }
