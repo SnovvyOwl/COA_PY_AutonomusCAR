@@ -64,7 +64,8 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         if (view == layout_ctrSpeed){
             speedController.drawStick(motionEvent);
             txtSpeed.setText((100 - speedController.percent)+"");
-            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
+
+            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
 //            socketCommunication.send(txtSpeed.getText().toString() + "속도");
 
 //            try {
@@ -77,7 +78,8 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         if (view == layout_ctrDirection){
             directionController.drawStick(motionEvent);
             txtDir.setText(directionController.percent+"");
-            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
+            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
+//            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
 //            socketCommunication.send(txtDir.getText().toString() + "방향");
             return true;
         }
