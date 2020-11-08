@@ -3,6 +3,7 @@
 #include<wiringSerial.h>
 #include<string>
 #include<iostream>
+
 #define  Channel_reset 0  
 using namespace std;
 class Arduino{
@@ -10,21 +11,19 @@ class Arduino{
         int arduino;
         string T_data = "";
         string R_data = "";        
-        float Loop_time = 0.02;
-        string port="dev/ttyACM0";
-        int baud=115200;
-    
+        //string port="dev/ttyACM0";
+        //int baud=115200;
         //BF, LR value range is -255 to 255
         int BF_desire = 100;
         int LR_desire = 0;
 
     public:
-        Arduino(string port,int _baud) //Generater
+        Arduino() //Generater
             
-        {   port=port;
-            baud=_baud;
-            if((arduino = serialOpen(port.c_str(),baud))<0){
+        {  
+            if((arduino = serialOpen("/dev/ttyACM0",115200))<0){
                 cerr<<"Unable to open Arduino Nano"<<endl;
+                //port Board
             }
             Start_setup();
         };
@@ -35,8 +34,6 @@ class Arduino{
             LR_desire = value;
         }
         void Start_setup(){
-            //GPIO.setmode(GPIO.BCM)
-            //GPIO.setwarnings(False)
             pinMode(Channel_reset, OUTPUT);
             digitalWrite(Channel_reset, LOW);        //Reset arduino
             delay(1000);
@@ -70,16 +67,17 @@ class Arduino{
             serialPuts(arduino,msg.c_str());
         } 
         void Serial_read(){
-            char Temp = char(serialGetchar(arduino));
-            if (Temp == '@'){
+            int Temp = serialGetchar(arduino);
+            if (Temp == 64){
                 R_data = "";
                 while (1){
-                    Temp = char(serialGetchar(arduino));
-                    if (Temp == '#'){
+                    Temp = serialGetchar(arduino);
+                    if (Temp == 35){
+                        cout<<R_data<<endl;
                         break;
                     }
-                    if(Temp != '@' & Temp != '#' & Temp){
-                    R_data = R_data + Temp;
+                    if(Temp != 64 & Temp != 35){
+                    R_data+=(char)Temp;
                     }
                 }
             }           
@@ -103,5 +101,11 @@ class Arduino{
                 LR_position = "L" + to_string(-1*LR_desire);
             }
             T_data = BF_position + LR_position;
+        }
+        string get_R_data(){
+            return R_data;
+        }
+        void quit(){
+            serialClose(arduino);
         }
 };
