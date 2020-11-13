@@ -60,7 +60,6 @@ class RasPi{
                 read(client,buffer,BUFF_SIZE);
                 sock_receive=buffer;
                 cout<<sock_receive<<endl;
-                cout<<sock_receive<<endl;
                 Nano.Serial_read();
                 if (sock_receive=="quit"){
                     break;
@@ -72,7 +71,7 @@ class RasPi{
         }
         void sending(){
             while(true){
-                send(client,sock_send.c_str(), sock_send.size(),0);
+                //send(client,sock_send.c_str(), sock_send.size(),0);
                 Nano.Value_to_T_data();
                 Nano.Serial_write();
                 if (sock_receive=="quit"){
