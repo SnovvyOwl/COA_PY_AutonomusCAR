@@ -3,19 +3,21 @@
 #include<wiringSerial.h>
 #include<Arduino.h>
 #include<iostream>
-#include <stdio.h>
+#include<stdio.h>
 #include <string>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include<thread>
 #include<sstream>
+#include<netdb.h>
 #define  BUFF_SIZE 8
+
 using namespace std;
 class RasPi{
     private:
         string ip ="";
-        int port=8080;
+        int port=13000;
         int client=0;
         string ser_port="/dev/ttyACM0";
         Arduino Nano;
@@ -23,25 +25,29 @@ class RasPi{
         string sock_receive="";
         string sock_send="";
         float Loop_time = 0.02;
+        struct hostent *he;
         
         
     public:
-        RasPi(string server_ip,int _port)
+        RasPi(const char *hostname, int _port)
         {   
-            ip=server_ip;
+            he=gethostbyname(hostname);
             port=_port;
-            
+            //ip=server_ip;
             client = socket( AF_INET, SOCK_STREAM, 0);
+            server_addr.sin_family = AF_INET;
+            server_addr.sin_port = htons(port);
+            server_addr.sin_addr.s_addr=*(long*)(he->h_addr_list[0]);
+            
             if(client==-1){
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
             }
-            server_addr.sin_family = AF_INET;
-            server_addr.sin_port = htons(port);
+            /*
             if(inet_pton(AF_INET,ip.c_str(), &server_addr.sin_addr)<=0){ 
                 cerr<<"\nInvalid address/ Address not supported \n";
                 sock_receive="quit";
-            } 
+            } */
            if (connect(client, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0){    
                 cerr<<"\nConnection Failed \n"; 
                 sock_receive="quit";
