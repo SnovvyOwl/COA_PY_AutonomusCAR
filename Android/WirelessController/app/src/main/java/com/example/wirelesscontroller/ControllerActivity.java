@@ -26,6 +26,9 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     SocketCommunication socketCommunication;
     SharedPreferences appData;
 
+    int state_speed = 2;
+    int state_direction = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,11 +66,19 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view == layout_ctrSpeed){
             speedController.drawStick(motionEvent);
+
+            if (state_speed != checkState(100 - speedController.percent)){
+                state_speed = checkState(100 - speedController.percent);
+                socketCommunication.send(makeData(Integer.toString(state_speed),Integer.toString(state_direction)));
+            }
+
+
             txtSpeed.setText((100 - speedController.percent)+"");
 
-            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
-//            socketCommunication.send(txtSpeed.getText().toString() + "속도");
+//            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
 
+
+//            socketCommunication.send(txtSpeed.getText().toString() + "속도");
 //            try {
 //                socketCommunication.send(socketCommunication.socket.getSendBufferSize() + "");
 //            } catch (SocketException e) {
@@ -77,8 +88,15 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
         }
         if (view == layout_ctrDirection){
             directionController.drawStick(motionEvent);
+
+            if (state_direction != checkState(directionController.percent)){
+                state_direction = checkState(directionController.percent);
+                socketCommunication.send(makeData(Integer.toString(state_speed),Integer.toString(state_direction)));
+            }
+
             txtDir.setText(directionController.percent+"");
-            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
+//            socketCommunication.send(makeData(Integer.toString(200 - speedController.percent),Integer.toString(directionController.percent + 100)));
+
 //            socketCommunication.send(makeData(txtSpeed.getText().toString(),txtDir.getText().toString()));
 //            socketCommunication.send(txtDir.getText().toString() + "방향");
             return true;
@@ -114,6 +132,16 @@ public class ControllerActivity extends Activity implements View.OnTouchListener
 
     private String makeData(String str1, String str2){
         return ("#" + str1 + "%" + str2);
+    }
+
+    private int checkState(int state){
+        if (state > 50 && state <= 100){
+            return 3;
+        } else if (state == 50){
+            return 2;
+        } else  {       // 0 < state < 50
+            return 1;
+        }
     }
 
     @Override

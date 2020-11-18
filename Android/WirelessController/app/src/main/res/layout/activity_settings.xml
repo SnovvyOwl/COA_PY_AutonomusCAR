@@ -33,10 +33,23 @@
         android:text="PORT"
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@id/txt_ip_title"
+        app:layout_constraintBottom_toTopOf="@id/txt_port_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidline"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_port_mode"
+        android:text="MODE"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/txt_ip_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/guidline"
-        android:layout_marginBottom="200dp"/>
+        android:layout_marginBottom="150dp"/>
+
 
 
     <TextView
@@ -59,10 +72,22 @@
         android:gravity="center"
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@id/txt_ip"
+        app:layout_constraintBottom_toTopOf="@id/txt_mode"
+        app:layout_constraintLeft_toRightOf="@id/guidline"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_mode"
+        android:text="mode 1"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/txt_ip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guidline"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="200dp"/>
+        android:layout_marginBottom="150dp"/>
 
     <Button
         android:layout_width="0dp"

@@ -7,7 +7,8 @@ class SocketCommunication:
     def __init__(self, ip=None, port=None):
         self.mSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if ip is None:
-            self.ip = "192.168.0.18"
+            # self.ip = "192.168.0.18"
+            self.ip = "localhost"
         if port is None:
             self.port = 5005
             return
