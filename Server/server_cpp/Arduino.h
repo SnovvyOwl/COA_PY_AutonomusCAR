@@ -8,38 +8,35 @@
 using namespace std;
 class Arduino{
     private:
-        int arduino;
+        int arduino=0;
         string T_data = "";
-        string R_data = "";        
-        //string port="dev/ttyACM0";
-        //int baud=115200;
+        string R_data = "";
         //BF, LR value range is -255 to 255
         int BF_desire = 100;
         int LR_desire = 0;
 
     public:
-        Arduino() //Generater
-            
-        {  
-            if((arduino = serialOpen("/dev/ttyACM0",115200))<0){
+        Arduino() {};//Generater
+        void Start_setup(char *_port,int _baud){
+            if((arduino = serialOpen(_port,_baud))<0){
                 cerr<<"Unable to open Arduino Nano"<<endl;
+                cout<<arduino<<endl;
                 //port Board
             }
-            Start_setup();
-        };
+            pinMode(Channel_reset, OUTPUT);
+            digitalWrite(Channel_reset, LOW);        //Reset arduino
+            delay(1000);
+            digitalWrite(Channel_reset,HIGH);
+            Serial_check(5);
+        }
+        
         void Set_BF_position(int value){
             BF_desire = value;
         }
         void Set_LR_position(int value){
             LR_desire = value;
         }
-        void Start_setup(){
-            pinMode(Channel_reset, OUTPUT);
-            digitalWrite(Channel_reset, LOW);        //Reset arduino
-            delay(1000);
-            digitalWrite(Channel_reset,HIGH);
-            Serial_check(5);
-        }   
+           
         int Serial_check(int timeout){
             int i = 0;
             while (1){
@@ -49,6 +46,7 @@ class Arduino{
                 cout<<"Waiting connection.\n";
                 Serial_read();
                 if (R_data == "TEST"){
+                    cout<<"Success\n";
                     return 0;
                     break;
                 }  
@@ -73,7 +71,7 @@ class Arduino{
                 while (1){
                     Temp = serialGetchar(arduino);
                     if (Temp == 35){
-                        cout<<R_data<<endl;
+                        //cout<<R_data<<endl;
                         break;
                     }
                     if(Temp != 64 & Temp != 35){
