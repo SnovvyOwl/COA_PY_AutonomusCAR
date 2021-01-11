@@ -16,7 +16,7 @@
 using namespace std;
 class SRasPi{
     private:
-        char *ip ="";
+        char *ip;
         int port=13000;
         int server = 0;
         int client = 0;
@@ -29,7 +29,7 @@ class SRasPi{
         float Loop_time = 0.02;
         
     public:
-        RasPi(const char* _ip,int _port, const char *serial,int baud)
+        SRasPi(const char* _ip,int _port, const char *serial,int baud)
         {   
             Nano.Start_setup((char*)serial,baud);//Arduino Serial port open
             ip=(char*)_ip;
@@ -38,7 +38,7 @@ class SRasPi{
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(port);
             //server_addr.sin_addr.s_addr=*(long*)(he->h_addr_list[0]);
-            server.ssin_addr.s_addr=htonl(INADDR_ANY);
+            server_addr.sin_addr.s_addr=htonl(INADDR_ANY);
             if(server==-1){
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
@@ -50,7 +50,7 @@ class SRasPi{
             cout<<"[start server]\n";
             cout<<"Server ip ->"<<ip<<endl;
             cout<<"Server port->"<<port<<endl;
-            if(bind(server,(struct sockaddr*)&server_adr,sizeof(server_addr))<0){
+            if(bind(server,(struct sockaddr*)&server_addr,sizeof(server_addr))<0){
                 cerr<<"Bind ERROR"<<endl;
                 sock_receive="quit";
             }
@@ -58,11 +58,7 @@ class SRasPi{
                 cerr<<"Listen ERROR";
                 sock_receive="quit";
             }
-            client_addr_size=sizeof(client_addr;)
-            if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
-                cerr<<"\nConnection Failed \n"; 
-                sock_receive="quit";
-            }
+
             check();
         }
         void stopServer(){
@@ -102,11 +98,18 @@ class SRasPi{
         
         void check(){
             cout<<"wait\n";
-            receiving();
-            cout<<"connection from"<<client_addr<<endl;
-            if check == "c"{
+            client_addr_len=sizeof(client_addr);
+            if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
+                cerr<<"\nConnection Failed \n"; 
+                sock_receive="quit";
+            }
+            char buffer[BUFF_SIZE]={0};
+            read(client,buffer,BUFF_SIZE);
+            cout<<sock_receive<<endl;
+            printf("Connection from: %s\n",inet_ntoa(client_addr.sin_addr));
+            if (sock_receive == "c"){
                 cout<<"controller is connected.\n";
-                write(client,"Server is Connected");
+                //write(client,"Server is Connected");
                 runServer();
             }
             else{
@@ -119,7 +122,7 @@ class SRasPi{
             thread receive_thread([&](){receiving();});
             //thread send_thread([&](){sending();});
             receive_thread.detach();//Command Recieve Thread
-            send_thread.detach();//current state send Thread
+            //send_thread.detach();//current state send Thread
             stringstream ss(sock_receive);
             int Start_point=0;
             int End_point=0;
