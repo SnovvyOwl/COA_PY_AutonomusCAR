@@ -16,7 +16,7 @@
 using namespace std;
 class SRasPi{
     private:
-        string ip ="";
+        char *ip ="";
         int port=13000;
         int server = 0;
         int client = 0;
@@ -29,10 +29,11 @@ class SRasPi{
         float Loop_time = 0.02;
         
     public:
-        RasPi(const char *serial,int baud)
+        RasPi(const char* _ip,int _port, const char *serial,int baud)
         {   
             Nano.Start_setup((char*)serial,baud);//Arduino Serial port open
-
+            ip=(char*)_ip;
+            port=_port;
             server = socket( AF_INET, SOCK_STREAM, 0);
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(port);
@@ -42,14 +43,36 @@ class SRasPi{
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
             }
-            bind(server,(struct sockaddr*)&server_adr,sizeof(server_addr));
-            listen(server,1);
+
+            startServer();
+        };
+        void startServer(){
+            cout<<"[start server]\n";
+            cout<<"Server ip ->"<<ip<<endl;
+            cout<<"Server port->"<<port<<endl;
+            if(bind(server,(struct sockaddr*)&server_adr,sizeof(server_addr))<0){
+                cerr<<"Bind ERROR"<<endl;
+                sock_receive="quit";
+            }
+            if(listen(server,1)<0){
+                cerr<<"Listen ERROR";
+                sock_receive="quit";
+            }
+            client_addr_size=sizeof(client_addr;)
             if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
                 cerr<<"\nConnection Failed \n"; 
                 sock_receive="quit";
             }
-            startServer();
-        };
+            check();
+        }
+        void stopServer(){
+            cout<<"[stop server]\n"<<"- Thank you -\n";
+            close(client);
+            close(server);
+            Nano.quit();
+            cout<<"OFF";
+        }
+
         void receiving(){
             char buffer[BUFF_SIZE]={0};
             while(true){
@@ -65,29 +88,38 @@ class SRasPi{
                 }
             }
         }
-        void sending(){
+        
+        /*void sending(){
             while(true){
                 Nano.Value_to_T_data();
                 Nano.Serial_write();
+                write(Nano.T)
                 if (sock_receive=="quit"){
                     break;
                 }
             }   
+        }*/
+        
+        void check(){
+            cout<<"wait\n";
+            receiving();
+            cout<<"connection from"<<client_addr<<endl;
+            if check == "c"{
+                cout<<"controller is connected.\n";
+                write(client,"Server is Connected");
+                runServer();
+            }
+            else{
+                cout<<"Illegal connection has detected.\n";
+                stopServer();
+            }
         }
-        void startServer(){
-            cout<<"start\n";
-            string message = "r";
-            cout<<"sending "<<message<<endl;
-            send(client,message.c_str(),message.size(),0); 
-            printf("run Client");
-            runClient();
-        }
-        void runClient(){
+        
+        void runServer(){
             thread receive_thread([&](){receiving();});
-            thread send_thread([&](){sending();});
-            receive_thread.detach();
-            send_thread.detach();
-
+            //thread send_thread([&](){sending();});
+            receive_thread.detach();//Command Recieve Thread
+            send_thread.detach();//current state send Thread
             stringstream ss(sock_receive);
             int Start_point=0;
             int End_point=0;
@@ -121,7 +153,6 @@ class SRasPi{
                     delay(Loop_time-((float)End_point/1000-(float)Start_point/1000));                
                 }
             }
-            printf("OFF\n");
-            Nano.quit();
+            stopServer();
         }
 };
