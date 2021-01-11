@@ -8,8 +8,7 @@ int main(){
     if(wiringPiSetup()==-1){
         return 1;
     }
-    char *hostname ="bluetank.iptime.org";
-    RasPi  car(hostname,13000);
+    RasPi  car("bluetank.iptime.org",13000,"/dev/ttyACM0",115200);
 
     return 0;
 }
