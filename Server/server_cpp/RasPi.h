@@ -16,10 +16,7 @@
 using namespace std;
 class RasPi{
     private:
-        string ip ="";
-        int port=13000;
         int client=0;
-        string ser_port="/dev/ttyACM0";
         Arduino Nano;
         struct sockaddr_in server_addr;
         string sock_receive="";
@@ -27,27 +24,20 @@ class RasPi{
         float Loop_time = 0.02;
         struct hostent *he;
         
-        
     public:
-        RasPi(const char *hostname, int _port)
+        RasPi(const char *hostname, const int _port, const char *serial,int baud)
         {   
-            he=gethostbyname(hostname);
-            port=_port;
-            //ip=server_ip;
+            Nano.Start_setup((char*)serial,baud);//Arduino Serial port open
+            he=gethostbyname(hostname); // server url
             client = socket( AF_INET, SOCK_STREAM, 0);
             server_addr.sin_family = AF_INET;
-            server_addr.sin_port = htons(port);
+            server_addr.sin_port = htons(_port);
             server_addr.sin_addr.s_addr=*(long*)(he->h_addr_list[0]);
             
             if(client==-1){
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
             }
-            /*
-            if(inet_pton(AF_INET,ip.c_str(), &server_addr.sin_addr)<=0){ 
-                cerr<<"\nInvalid address/ Address not supported \n";
-                sock_receive="quit";
-            } */
            if (connect(client, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0){    
                 cerr<<"\nConnection Failed \n"; 
                 sock_receive="quit";
@@ -71,7 +61,6 @@ class RasPi{
         }
         void sending(){
             while(true){
-                //send(client,sock_send.c_str(), sock_send.size(),0);
                 Nano.Value_to_T_data();
                 Nano.Serial_write();
                 if (sock_receive=="quit"){
