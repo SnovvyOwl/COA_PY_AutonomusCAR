@@ -14,13 +14,12 @@
 #define  BUFF_SIZE 8
 
 using namespace std;
-class RasPiserver{
+class SRasPi{
     private:
         string ip ="";
         int port=13000;
         int server = 0;
         int client = 0;
-        string ser_port="/dev/ttyACM0";
         Arduino Nano;
         struct sockaddr_in client_addr;
         int client_addr_len=sizeof(client_addr);
@@ -28,15 +27,12 @@ class RasPiserver{
         string sock_receive="";
         string sock_send="";
         float Loop_time = 0.02;
-        //struct hostent *he;
-        
         
     public:
-        RasPi(const char *hostname, int _port)
+        RasPi(const char *serial,int baud)
         {   
-            //he=gethostbyname(hostname);
-            port=_port;
-            //ip=server_ip;
+            Nano.Start_setup((char*)serial,baud);//Arduino Serial port open
+
             server = socket( AF_INET, SOCK_STREAM, 0);
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(port);
@@ -46,18 +42,13 @@ class RasPiserver{
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
             }
-            /*
-            if(inet_pton(AF_INET,ip.c_str(), &server_addr.sin_addr)<=0){ 
-                cerr<<"\nInvalid address/ Address not supported \n";
-                sock_receive="quit";
-            } */
             bind(server,(struct sockaddr*)&server_adr,sizeof(server_addr));
             listen(server,1);
-           if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
+            if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
                 cerr<<"\nConnection Failed \n"; 
                 sock_receive="quit";
             }
-            startClient();
+            startServer();
         };
         void receiving(){
             char buffer[BUFF_SIZE]={0};
@@ -76,7 +67,6 @@ class RasPiserver{
         }
         void sending(){
             while(true){
-                //send(client,sock_send.c_str(), sock_send.size(),0);
                 Nano.Value_to_T_data();
                 Nano.Serial_write();
                 if (sock_receive=="quit"){
@@ -84,7 +74,7 @@ class RasPiserver{
                 }
             }   
         }
-        void startClient(){
+        void startServer(){
             cout<<"start\n";
             string message = "r";
             cout<<"sending "<<message<<endl;
