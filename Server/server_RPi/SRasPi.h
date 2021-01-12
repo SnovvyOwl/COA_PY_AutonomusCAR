@@ -22,7 +22,7 @@ class SRasPi{
         int client = 0;
         Arduino Nano;
         struct sockaddr_in client_addr;
-        int client_addr_len=sizeof(client_addr);
+        socklen_t client_addr_len=sizeof(client_addr);
         struct sockaddr_in server_addr;
         string sock_receive="";
         string sock_send="";
@@ -34,18 +34,19 @@ class SRasPi{
             Nano.Start_setup((char*)serial,baud);//Arduino Serial port open
             ip=(char*)_ip;
             port=_port;
+            
             server = socket( AF_INET, SOCK_STREAM, 0);
-            server_addr.sin_family = AF_INET;
-            server_addr.sin_port = htons(port);
-            //server_addr.sin_addr.s_addr=*(long*)(he->h_addr_list[0]);
-            server_addr.sin_addr.s_addr=htonl(INADDR_ANY);
             if(server==-1){
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
             }
-
+            //memset(&server_addr,0,sizeof(sever_addr));
+            server_addr.sin_family = AF_INET;
+            server_addr.sin_port = htons(port);
+            server_addr.sin_addr.s_addr=htonl(INADDR_ANY);
             startServer();
         };
+        
         void startServer(){
             cout<<"[start server]\n";
             cout<<"Server ip ->"<<ip<<endl;
@@ -55,58 +56,19 @@ class SRasPi{
                 sock_receive="quit";
             }
             if(listen(server,1)<0){
-                cerr<<"Listen ERROR";
+                cerr<<"Listen ERROR"<<endl;
                 sock_receive="quit";
             }
 
-            check();
-        }
-        void stopServer(){
-            cout<<"[stop server]\n"<<"- Thank you -\n";
-            close(client);
-            close(server);
-            Nano.quit();
-            cout<<"OFF";
-        }
-
-        void receiving(){
-            char buffer[BUFF_SIZE]={0};
-            while(true){
-                read(client,buffer,BUFF_SIZE);
-                sock_receive=buffer;
-                cout<<sock_receive<<endl;
-                Nano.Serial_read();
-                if (sock_receive=="quit"){
-                    break;
-                }
-                if (sock_receive==""){
-                    break;
-                }
-            }
-        }
-        
-        /*void sending(){
-            while(true){
-                Nano.Value_to_T_data();
-                Nano.Serial_write();
-                write(Nano.T)
-                if (sock_receive=="quit"){
-                    break;
-                }
-            }   
-        }*/
-        
-        void check(){
             cout<<"wait\n";
             client_addr_len=sizeof(client_addr);
-            if (client=accept(server, (struct sockaddr *)&client_addr, (socklen_t*)&client_addr_len) < 0){    
-                cerr<<"\nConnection Failed \n"; 
-                sock_receive="quit";
-            }
+            client=accept(server, (struct sockaddr *)&client_addr,&client_addr_len);
+            printf("Connection from: %s\n",inet_ntoa(client_addr.sin_addr));   
             char buffer[BUFF_SIZE]={0};
             read(client,buffer,BUFF_SIZE);
+            sock_receive=buffer;
             cout<<sock_receive<<endl;
-            printf("Connection from: %s\n",inet_ntoa(client_addr.sin_addr));
+
             if (sock_receive == "c"){
                 cout<<"controller is connected.\n";
                 //write(client,"Server is Connected");
@@ -116,6 +78,14 @@ class SRasPi{
                 cout<<"Illegal connection has detected.\n";
                 stopServer();
             }
+        }
+        
+        void stopServer(){
+            cout<<"[stop server]\n"<<"- Thank you -\n";
+            close(client);
+            close(server);
+            Nano.quit();
+            cout<<"OFF";
         }
         
         void runServer(){
@@ -158,4 +128,33 @@ class SRasPi{
             }
             stopServer();
         }
+
+        void receiving(){
+            char buffer[BUFF_SIZE]={0};
+            while(true){
+                read(client,buffer,BUFF_SIZE);
+                sock_receive=buffer;
+                cout<<sock_receive<<endl;
+                Nano.Serial_read();
+                if (sock_receive=="quit"){
+                    break;
+                }
+                if (sock_receive==""){
+                    break;
+                }
+            }
+        }
+        
+        /*void sending(){
+            while(true){
+                Nano.Value_to_T_data();
+                Nano.Serial_write();
+                write(Nano.T)
+                if (sock_receive=="quit"){
+                    break;
+                }
+            }   
+        }*/
+        
+
 };
