@@ -68,16 +68,8 @@ class SRasPi{
             read(client,buffer,BUFF_SIZE);
             sock_receive=buffer;
             cout<<sock_receive<<endl;
-
-            if (sock_receive == "c"){
-                cout<<"controller is connected.\n";
-                //write(client,"Server is Connected");
-                runServer();
-            }
-            else{
-                cout<<"Illegal connection has detected.\n";
-                stopServer();
-            }
+            runServer();
+            
         }
         
         void stopServer(){
@@ -89,9 +81,9 @@ class SRasPi{
         }
         
         void runServer(){
-            thread receive_thread([&](){receiving();});
+            
             //thread send_thread([&](){sending();});
-            receive_thread.detach();//Command Recieve Thread
+            //Command Recieve Thread
             //send_thread.detach();//current state send Thread
             stringstream ss(sock_receive);
             int Start_point=0;
@@ -99,9 +91,20 @@ class SRasPi{
             int BF=0;
             int LR=0;
             string R_data="";
+            if (sock_receive == "c"){
+                cout<<"controller is connected.\n";
+                thread receive_thread([&](){receiving();});
+                receive_thread.detach();
+                
+            }
+
             while(1){
-                cout<<sock_receive<<endl;
-                if (sock_receive=="Test"){
+                if(sock_receive=="quit"){
+                    cout<<"Illegal connection has detected.\n";
+                    break;
+                }
+                                
+                else if (sock_receive=="Test"){
                     Nano.Set_BF_position(255);
                     Nano.Set_LR_position(0);
                 }                  
@@ -109,52 +112,37 @@ class SRasPi{
                     Nano.Set_BF_position(-255);
                     Nano.Set_LR_position(0);
                 }
-                else if(sock_receive=="quit"){
-                    break;
-                }
+
                 else{
+                    //cout<<sock_receive<<endl;
                     Start_point=millis();
                     ss>>BF;
                     ss>>LR;
-                    Nano.Set_BF_position(BF);
-                    Nano.Set_LR_position(LR);
+                    //Nano.Set_BF_position(BF);
+                    //Nano.Set_LR_position(LR);
                     ss.str("");
-                    R_data=Nano.get_R_data();
-                    cout<<R_data<<endl;
-
+                    //R_data=Nano.get_R_data();
+                    //cout<<R_data<<endl;
                     End_point = millis();
-                    delay(Loop_time-((float)End_point/1000-(float)Start_point/1000));                
+                    delay(Loop_time-((float)End_point/1000-(float)Start_point/1000));
+                    
                 }
             }
             stopServer();
         }
-
+    
         void receiving(){
             char buffer[BUFF_SIZE]={0};
-            while(true){
+            while(1){
                 read(client,buffer,BUFF_SIZE);
                 sock_receive=buffer;
-                cout<<sock_receive<<endl;
-                Nano.Serial_read();
-                if (sock_receive=="quit"){
-                    break;
+                if (sock_receive.size()){
+                    
+                    cout<<"controller: "<<sock_receive<<endl;
+                    buffer[0]={0,};
+
                 }
-                if (sock_receive==""){
-                    break;
-                }
+                //Nano.Serial_read();
             }
         }
-        
-        /*void sending(){
-            while(true){
-                Nano.Value_to_T_data();
-                Nano.Serial_write();
-                write(Nano.T)
-                if (sock_receive=="quit"){
-                    break;
-                }
-            }   
-        }*/
-        
-
 };
