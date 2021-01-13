@@ -3,7 +3,6 @@
 #include<wiringSerial.h>
 #include<string>
 #include<iostream>
-
 #define  Channel_reset 0  
 using namespace std;
 class Arduino{
@@ -25,7 +24,7 @@ class Arduino{
             }
             pinMode(Channel_reset, OUTPUT);
             digitalWrite(Channel_reset, LOW);        //Reset arduino
-            delay(1000);
+            delay(500);
             digitalWrite(Channel_reset,HIGH);
             Serial_check(5);
         }
@@ -42,7 +41,7 @@ class Arduino{
             while (1){
                 T_data = "TEST";
                 Serial_write();
-                delay(1000);
+                delay(500);
                 cout<<"Waiting connection.\n";
                 Serial_read();
                 if (R_data == "TEST"){

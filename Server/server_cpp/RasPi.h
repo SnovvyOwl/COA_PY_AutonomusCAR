@@ -37,10 +37,12 @@ class RasPi{
             if(client==-1){
                 cerr<< "\n Socket creation error \n";
                 sock_receive="quit";
+				exit(1);
             }
            if (connect(client, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0){    
                 cerr<<"\nConnection Failed \n"; 
                 sock_receive="quit";
+				exit(1);
             }
             startClient();
         };
@@ -52,7 +54,7 @@ class RasPi{
                 cout<<sock_receive<<endl;
                 Nano.Serial_read();
                 if (sock_receive=="quit"){
-                    break;
+					exit(1);
                 }
                 if (sock_receive==""){
                     break;
@@ -64,7 +66,7 @@ class RasPi{
                 Nano.Value_to_T_data();
                 Nano.Serial_write();
                 if (sock_receive=="quit"){
-                    break;
+					exit(1);
                 }
             }   
         }
