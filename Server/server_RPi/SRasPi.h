@@ -9,7 +9,6 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include<thread>
-#include<sstream>
 #include<netdb.h>
 #define  BUFF_SIZE 8
 
@@ -27,6 +26,8 @@ class SRasPi{
         string sock_receive=""; //received data for Clinet socket
         string sock_send="";
         float Loop_time = 0.02;
+        int BF=0;
+        int LR=0;
         
     public:
         SRasPi(const char* _ip,int _port, const char *serial,int baud)
@@ -84,17 +85,15 @@ class SRasPi{
         }
         
         void runServer(){
-            stringstream ss(sock_receive);//for parsing sock_recive 
             int Start_point=0;
             int End_point=0;
-            int BF=0;
-            int LR=0;
+            
             string R_data="";
             if (sock_receive == "c"){
 				//Controller Thread Generate;
                 cout<<"controller is connected.\n";
                 thread receive_thread([&](){receiving();});
-                receive_thread.detach(); 
+                receive_thread.detach();
             }
 
             while(1){
@@ -114,13 +113,12 @@ class SRasPi{
                 }
 
                 else{
+                    
                     Start_point=millis();
-                    ss>>BF;
-                    ss>>LR;
-                    //Nano.Set_BF_position(BF);
-                    //Nano.Set_LR_position(LR);
-                    ss.str("");
-                    //R_data=Nano.get_R_data();
+                    Nano.Serial_write();
+                    
+                    R_data=Nano.get_R_data();
+                    
                     //cout<<R_data<<endl;
                     End_point = millis();
                     //delay(Loop_time-((float)End_point/1000-(float)Start_point/1000)); 
@@ -136,9 +134,16 @@ class SRasPi{
                 sock_receive=buffer;
                 if (sock_receive.size()){
                     cout<<"controller: "<<sock_receive<<endl;
+                    sock_receive=sock_receive.substr(1,7);//for parsing sock_receive
+                    BF=stoi(sock_receive.substr(0,3));
+                    LR=stoi(sock_receive.substr(4));
                     buffer[0]={0,};
+                    Nano.Set_BF_position(BF);
+                    Nano.Set_LR_position(LR);
+                    Nano.Value_to_T_data();
+                                       
                 }
-				Nano.Serial_read();
+				
             }
         }
 };

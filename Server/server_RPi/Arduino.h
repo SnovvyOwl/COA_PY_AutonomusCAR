@@ -41,7 +41,7 @@ class Arduino{
             while (1){
                 T_data = "TEST";
                 Serial_write();
-                delay(500);
+                delay(300);
                 cout<<"Waiting connection.\n";
                 Serial_read();
                 if (R_data == "TEST"){
