@@ -9,7 +9,6 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include<thread>
-#include<sstream>
 #include<netdb.h>
 #define  BUFF_SIZE 8
 
@@ -99,7 +98,6 @@ class RasPi{
             receive_thread.detach();
             send_thread.detach();
 
-            stringstream ss(sock_receive);
             int Start_point=0;
             int End_point=0;
             //int BF=0;
@@ -123,11 +121,8 @@ class RasPi{
                     
                     Nano.Serial_read();
                     Start_point=millis();
-                    ss>>BF;
-                    ss>>LR;
                     Nano.Set_BF_position(BF);
                     Nano.Set_LR_position(LR);
-                    ss.str("");
                     R_data=Nano.get_R_data();
                     //cout<<R_data<<endl;
 
