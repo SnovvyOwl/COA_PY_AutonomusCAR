@@ -23,6 +23,8 @@ class RasPi{
         string sock_send="";
         float Loop_time = 0.02;
         struct hostent *he;
+        int BF=0;
+        int LR=0;
         
     public:
         RasPi(const char *hostname, const int _port, const char *serial,int baud)
@@ -51,15 +53,28 @@ class RasPi{
             while(true){
                 read(client,buffer,BUFF_SIZE);
                 sock_receive=buffer;
-                cout<<sock_receive<<endl;
-                Nano.Serial_read();
-                if (sock_receive=="quit"){
-					exit(1);
-                }
-                if (sock_receive==""){
-                    break;
+                if (sock_receive.size()){
+                    if (sock_receive=="quit"){
+                        quitClient();
+                    }
+                    cout<<"controller: "<<sock_receive<<endl;
+                    BF=stoi(sock_receive.substr(1,3));
+                    LR=stoi(sock_receive.substr(5));
+                    buffer[0]={0,};
+                    Nano.Set_BF_position(BF);
+                    Nano.Set_LR_position(LR);
+                    Nano.Value_to_T_data();
+
                 }
             }
+        }
+        void quitClient(){
+            cout<<"Close.."<<endl;
+            Nano.quit();
+            close(client);
+            cout<<"OFF"<<endl;
+            exit(1);
+        
         }
         void sending(){
             while(true){
@@ -87,11 +102,12 @@ class RasPi{
             stringstream ss(sock_receive);
             int Start_point=0;
             int End_point=0;
-            int BF=0;
-            int LR=0;
+            //int BF=0;
+            //int LR=0;
             string R_data="";
             while(1){
                 cout<<sock_receive<<endl;
+                
                 if (sock_receive=="Test"){
                     Nano.Set_BF_position(255);
                     Nano.Set_LR_position(0);
@@ -104,6 +120,8 @@ class RasPi{
                     break;
                 }
                 else{
+                    
+                    Nano.Serial_read();
                     Start_point=millis();
                     ss>>BF;
                     ss>>LR;
@@ -111,13 +129,12 @@ class RasPi{
                     Nano.Set_LR_position(LR);
                     ss.str("");
                     R_data=Nano.get_R_data();
-                    cout<<R_data<<endl;
+                    //cout<<R_data<<endl;
 
                     End_point = millis();
-                    delay(Loop_time-((float)End_point/1000-(float)Start_point/1000));                
+                    //delay(Loop_time-((float)End_point/1000-(float)Start_point/1000));                
                 }
             }
-            printf("OFF\n");
-            Nano.quit();
+            quitClient();
         }
 };
